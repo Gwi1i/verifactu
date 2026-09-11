@@ -47,6 +47,10 @@ En este repositorio se incluye el plugin **VeriFactu Express for WooCommerce** (
 2. En tu WordPress, ve a **Plugins > Añadir nuevo > Subir plugin**.
 3. Actívalo y configura tu NIF emisor en **WooCommerce > VeriFactu AEAT**.
 
+### Modalidades de Licencia:
+* **Versión Community (GPLv2):** Descarga gratuita del `.zip` en este repositorio para entornos de prueba.
+* **Licencia Comercial Pro:** Soporte de actualizaciones para futuras revisiones de la AEAT y uso comercial garantizado: 👉 **[Comprar Licencia Comercial Pro (29€)](https://gwindor7.gumroad.com/l/tnvuko)**
+
 ---
 
 ## 🧪 Ejecutar Tests Técnicos en Local
