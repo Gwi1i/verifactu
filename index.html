@@ -5,6 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="ikbQwpjiV4jEqnAWP1DhShhRnAUvZWKLm5zIFTjNBPA" />
     <title>Validador Oficial VeriFactu & Generador de Huella SHA-256 (AEAT v0.1.2)</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Validador técnico oficial y generador de huella SHA-256 VeriFactu conforme a la Orden HAC/1177/2024 y RD 1007/2023 de la AEAT. Validación 100% en navegador y plugin WooCommerce.">
+    <meta name="keywords" content="verifactu, aeat, orden hac 1177 2024, huella sha-256, validador verifactu, plugin woocommerce verifactu, factura electronica espana, ley antifraude">
+    <link rel="canonical" href="https://gwi1i.github.io/verifactu/">
+
+    <!-- Open Graph / Redes Sociales -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Validador Oficial VeriFactu & Generador de Huella SHA-256 (AEAT v0.1.2)">
+    <meta property="og:description" content="Validador gratuito y client-side para la huella encadenada SHA-256 y código QR oficial de la AEAT. Sin servidores externos.">
+    <meta property="og:url" content="https://gwi1i.github.io/verifactu/">
+    <meta property="og:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Validador Oficial VeriFactu & Generador de Huella SHA-256 (AEAT v0.1.2)">
+    <meta name="twitter:description" content="Herramienta técnica gratuita para validar huellas SHA-256 de facturas bajo la Orden HAC/1177/2024.">
+    <meta name="twitter:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Validador VeriFactu AEAT",
+          "url": "https://gwi1i.github.io/verifactu/",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript. Web Crypto API supported.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+          },
+          "description": "Herramienta client-side para el cálculo canónico de huella SHA-256 encadenada y código QR de cotejo bajo la Orden HAC/1177/2024 de la AEAT."
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "VeriFactu Express for WooCommerce",
+          "operatingSystem": "WordPress / WooCommerce",
+          "applicationCategory": "Plugin",
+          "offers": {
+            "@type": "Offer",
+            "price": "29.00",
+            "priceCurrency": "EUR",
+            "url": "https://gwindor7.gumroad.com/l/tnvuko"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Cómo se calcula la huella SHA-256 en VeriFactu según la Orden HAC/1177/2024?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Se calcula concatenando exactamente 8 campos canónicos separados por el carácter &: IDEmisorFactura, NumSerieFactura, FechaExpedicionFactura, TipoFactura, CuotaTotal, ImporteTotal, Huella anterior y FechaHoraHusoGenRegistro, aplicando la función hash criptográfica SHA-256 en mayúsculas."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Qué es el código QR obligatorio de VeriFactu?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Es un código QR reglamentario que codifica la URL oficial de la Sede Electrónica de la AEAT para el cotejo directo de la validez del registro de facturación por parte del receptor."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Cómo adaptar una tienda WooCommerce a la Ley Antifraude y VeriFactu?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Instalando el plugin VeriFactu Express for WooCommerce. Se integra con HPOS, calculando de forma 100% local la huella encadenada y generando el QR oficial de la AEAT en cada pedido sin intermediarios externos."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Cuáles son los errores más comunes al emitir facturas en VeriFactu?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Los más habituales son el Error 1109 (dígito de control NIF/CIF erróneo) y el Error 1154 (facturas rectificativas sin referencia a la factura original)."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -398,6 +488,61 @@
                     <tbody id="specTableBody">
                     </tbody>
                 </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Guía Técnica y Preguntas Frecuentes (SEO & Contenido) -->
+    <div style="max-width: 1400px; margin: 0 auto 3rem; padding: 0 1.5rem;">
+        <section class="panel" style="background: rgba(17, 24, 39, 0.6); border: 1px solid var(--border); border-radius: 16px; padding: 2rem;">
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                    📚 Guía Técnica y Preguntas Frecuentes sobre VeriFactu (Orden HAC/1177/2024)
+                </h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">
+                    Referencia normativa oficial para desarrolladores, gestorías y tiendas online que emiten facturas bajo el RD 1007/2023.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.5rem;">
+                        ¿Cómo se calcula la huella SHA-256 encadenada?
+                    </h3>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+                        La huella digital se genera concatenando exactamente <strong>8 campos canónicos</strong> separados por el carácter <code style="color: var(--accent-emerald);">&</code>:<br>
+                        <code>IDEmisorFactura&NumSerieFactura&FechaExpedicionFactura&TipoFactura&CuotaTotal&ImporteTotal&Huella&FechaHoraHusoGenRegistro</code>.<br>
+                        El resultado se pasa por el algoritmo criptográfico <strong>SHA-256</strong> y se codifica en cadena hexadecimal en mayúsculas.
+                    </p>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.5rem;">
+                        ¿Qué es el código QR reglamentario y cómo funciona?
+                    </h3>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+                        El RD 1007/2023 exige que todas las facturas impresas o en PDF incluyan un código QR con una URL reglamentaria. Esta URL apunta a la <strong>Sede Electrónica de la AEAT</strong> con los parámetros de la factura, permitiendo al cliente final verificar en tiempo real si el registro ha sido remitido o custodiado legalmente.
+                    </p>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.5rem;">
+                        ¿Cómo solucionar el Error 1109 y el Error 1154?
+                    </h3>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+                        <strong>Error 1109:</strong> Ocurre cuando el NIF/CIF emisor no supera el algoritmo de control oficial de la AEAT.<br>
+                        <strong>Error 1154:</strong> Aparece en facturas rectificativas (R1 a R5) cuando no se especifica el número de la factura original que se rectifica o anula.
+                    </p>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.5rem;">
+                        ¿Por qué elegir VeriFactu Express para WooCommerce?
+                    </h3>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+                        A diferencia de los módulos que cobran suscripciones mensuales de 15€ a 25€/mes (180€–300€/año) y envían tus datos a servidores externos, <strong>VeriFactu Express</strong> es de <strong>pago único (29€)</strong>, 100% privado y procesa todas las firmas criptográficas directamente dentro de tu propio servidor.
+                    </p>
+                </div>
             </div>
         </section>
     </div>
