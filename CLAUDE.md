@@ -23,7 +23,7 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
 | `index.html`, `robots.txt`, `sitemap.xml`, `vercel.json`, `gumroad_cover.jpg` | Sitio publicado (raíz del repo = GitHub Pages) |
 | `gwii-invoice-hash-for-woocommerce/` | Código fuente del plugin (php, readme.txt, LICENSE, INSTRUCCIONES_Y_SOPORTE.txt) |
 | `gwii-invoice-hash-for-woocommerce.zip` | Plugin empaquetado que descarga la landing y que está en Gumroad |
-| `tests/test_plugin.php` | 106 pruebas del plugin con stubs de WordPress/WooCommerce (`php tests/test_plugin.php`) |
+| `tests/test_plugin.php` | 119 pruebas del plugin con stubs de WordPress/WooCommerce (`php tests/test_plugin.php`) |
 | `test_verifactu_spec.py` | Vectores AEAT, URL del QR y dígito de control de NIF en Python |
 | `svn-deploy/` | Estructura `trunk/` + `assets/` y script `publicar_wporg.ps1` para el SVN de WordPress.org |
 | `wp-org-assets/` | Banners e iconos para WordPress.org (sin sellos ni "certificado") |
@@ -56,7 +56,7 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
    `Version`, changelog y `svn-deploy/trunk`, y publicar con
    `powershell -ExecutionPolicy Bypass -File svn-deploy/publicar_wporg.ps1` (cambiar `$version`).
    El commit SVN pide la contraseña de SVN: la escribe siempre el usuario en su terminal.
-3. Probar el plugin en un WordPress real con HPOS (completar, cancelar y reembolsar un pedido).
+3. ~~Probar en un WordPress real con HPOS~~ Hecho el 24/09/2026 en WordPress Playground (SQLite): destapó el fallo de GET_LOCK corregido en 1.1.1. Falta probarlo en un hosting con MySQL.
 
 ## Cómo trabajar
 
