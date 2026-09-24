@@ -12,10 +12,10 @@
       ]
     },
     {
-      "source": "/verifactu-express.zip",
+      "source": "/gwii-invoice-hash-for-woocommerce.zip",
       "headers": [
         { "key": "Content-Type", "value": "application/zip" },
-        { "key": "Content-Disposition", "value": "attachment; filename=\"verifactu-express.zip\"" }
+        { "key": "Content-Disposition", "value": "attachment; filename=\"gwii-invoice-hash-for-woocommerce.zip\"" }
       ]
     }
   ]

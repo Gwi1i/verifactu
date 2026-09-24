@@ -23,7 +23,7 @@ Esta carpeta (`deploy_web`) contiene todo lo necesario para poner la herramienta
 
 ### Opción 3: GitHub Pages
 1. Crea un repositorio público en GitHub (por ejemplo, `verifactu-linter`).
-2. Sube los archivos de esta carpeta (`index.html`, `verifactu-express.zip`, `robots.txt`, `sitemap.xml`).
+2. Sube los archivos de esta carpeta (`index.html`, `gwii-invoice-hash-for-woocommerce.zip`, `robots.txt`, `sitemap.xml`).
 3. En GitHub, ve a **Settings > Pages > Branch: main > Save**.
 4. En 60 segundos tu herramienta estará disponible en: `https://tu-usuario.github.io/verifactu-linter`.
 
@@ -31,6 +31,6 @@ Esta carpeta (`deploy_web`) contiene todo lo necesario para poner la herramienta
 
 ### Archivos incluidos en este paquete:
 * **`index.html`**: La aplicación web del Validador y Linter VeriFactu (contrastado con los vectores oficiales de la AEAT v0.1.2).
-* **`verifactu-express.zip`**: El plugin completo de WooCommerce listo para ser descargado por los usuarios desde el banner superior.
+* **`gwii-invoice-hash-for-woocommerce.zip`**: El plugin completo de WooCommerce listo para ser descargado por los usuarios desde el banner superior.
 * **`vercel.json`**: Cabeceras de seguridad y configuración para servir el archivo zip correctamente.
 * **`robots.txt`** y **`sitemap.xml`**: Para que Googlebot indexe la página en los primeros puestos de búsqueda de VeriFactu.

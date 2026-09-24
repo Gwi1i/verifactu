@@ -1,0 +1,103 @@
+================================================================================
+GWII INVOICE HASH FOR WOOCOMMERCE - INSTALACIÓN, ALCANCE Y SOPORTE
+================================================================================
+
+Gracias por usar Gwii Invoice Hash for WooCommerce (antes Gwii Invoice Hash). Este documento explica qué hace el plugin,
+qué no hace, cómo instalarlo y cómo resolver las dudas más frecuentes.
+
+--------------------------------------------------------------------------------
+1. QUÉ HACE Y QUÉ NO HACE (LÉELO ANTES DE INSTALAR)
+--------------------------------------------------------------------------------
+HACE:
+* Calcula la huella SHA-256 encadenada de cada pedido al pasar a 'Completado',
+  con la cadena canónica del documento técnico AEAT v0.1.2.
+* Asigna un número de factura correlativo (prefijo + 6 dígitos).
+* Genera la URL del código QR de la AEAT (Orden HAC/1177/2024, cap. VIII):
+  https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR?nif=&numserie=&fecha=&importe=
+* Genera un registro de anulación si un pedido registrado se cancela o se
+  reembolsa por completo.
+* Guarda todo en los metadatos del pedido y lo muestra en el panel.
+
+NO HACE:
+* No genera el XML del registro de facturación ni lo firma.
+* No remite registros a la AEAT.
+* No lleva registro de eventos ni emite la declaración responsable.
+* No cubre reembolsos parciales (facturas rectificativas).
+* No incrusta la imagen del QR en el PDF.
+
+Por tanto, el plugin por sí solo NO convierte tu tienda en un sistema de
+facturación adaptado al RD 1007/2023. Plazos actuales: 1 de enero de 2027 para
+contribuyentes del Impuesto sobre Sociedades y 1 de julio de 2027 para el resto.
+
+--------------------------------------------------------------------------------
+2. REQUISITOS
+--------------------------------------------------------------------------------
+* WordPress 5.8 o superior.
+* WooCommerce 5.0 o superior. Compatible con HPOS.
+* PHP 7.4 o superior.
+* MySQL o MariaDB (se usa GET_LOCK para proteger el encadenamiento).
+
+--------------------------------------------------------------------------------
+3. INSTALACIÓN
+--------------------------------------------------------------------------------
+1. Plugins > Añadir nuevo > Subir plugin.
+2. Selecciona 'gwii-invoice-hash-for-woocommerce.zip' y pulsa 'Instalar ahora'.
+3. Pulsa 'Activar plugin'.
+
+--------------------------------------------------------------------------------
+4. CONFIGURACIÓN
+--------------------------------------------------------------------------------
+1. WooCommerce > Huella VeriFactu.
+2. Rellena:
+   - NIF del emisor: se comprueba el dígito de control al guardar.
+   - Prefijo de la serie: por ejemplo 'F2026-'. El número correlativo se añade
+     automáticamente (F2026-000001, F2026-000002...).
+   - Tipo de factura por defecto: F1 (completa) o F2 (simplificada).
+3. Guardar ajustes.
+
+Comprueba también que la zona horaria de WordPress (Ajustes > Generales) sea
+la de tu negocio, por ejemplo 'Madrid'. La marca temporal del registro usa
+esa zona horaria.
+
+--------------------------------------------------------------------------------
+5. INTEGRACIÓN CON FACTURAS EN PDF
+--------------------------------------------------------------------------------
+Si usas 'WooCommerce PDF Invoices & Packing Slips', el plugin añade en la
+factura el número VeriFactu, la huella y la URL de cotejo como texto.
+La imagen del QR (30 a 40 mm, nivel M) debes añadirla tú a partir de la URL.
+
+Metadatos disponibles en cada pedido para otros plugins:
+- _verifactu_num_serie          Número de factura asignado.
+- _verifactu_hash               Huella SHA-256 (64 hex, mayúsculas).
+- _verifactu_hash_anterior      Huella del registro anterior.
+- _verifactu_canonical          Cadena canónica usada en el cálculo.
+- _verifactu_fecha_expedicion   DD-MM-AAAA.
+- _verifactu_fecha_hora_gen     Marca temporal ISO 8601 con huso.
+- _verifactu_qr_url             URL para el código QR.
+- _verifactu_anulacion_hash     Huella del registro de anulación (si existe).
+
+--------------------------------------------------------------------------------
+6. PREGUNTAS FRECUENTES
+--------------------------------------------------------------------------------
+P: Un pedido no tiene huella.
+R: Solo se genera al pasar a 'Completado' y con el NIF configurado. Si falta
+   el NIF, el pedido tendrá una nota explicándolo.
+
+P: ¿Puedo cambiar el prefijo a mitad de año?
+R: Sí, pero el contador no se reinicia. Si necesitas reiniciarlo, borra la
+   opción 'gwiih_next_number' de la tabla wp_options.
+
+P: ¿Cómo compruebo que el cálculo es correcto?
+R: Copia la cadena canónica del pedido (_verifactu_canonical) en el validador
+   web https://gwi1i.github.io/verifactu/ y compara la huella.
+
+--------------------------------------------------------------------------------
+7. LICENCIA Y SOPORTE
+--------------------------------------------------------------------------------
+El plugin se distribuye bajo GPLv2 o posterior. Puedes usarlo, modificarlo y
+redistribuirlo, también en tiendas comerciales.
+
+El pago único de 29€ en Gumroad da derecho a soporte por correo y a recibir
+actualizaciones cuando cambie la normativa. No es una licencia de uso: el
+software es el mismo y es libre.
+================================================================================

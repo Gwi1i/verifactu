@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="ikbQwpjiV4jEqnAWP1DhShhRnAUvZWKLm5zIFTjNBPA" />
-    <title>Validador Oficial VeriFactu & Generador de Huella SHA-256 (AEAT v0.1.2)</title>
+    <title>Validador VeriFactu: huella SHA-256 y código QR (AEAT v0.1.2)</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Validador técnico oficial y generador de huella SHA-256 VeriFactu conforme a la Orden HAC/1177/2024 y RD 1007/2023 de la AEAT. Validación 100% en navegador y plugin WooCommerce.">
+    <meta name="description" content="Validador técnico gratuito de la huella SHA-256 encadenada y de la URL del código QR de VeriFactu (Orden HAC/1177/2024, RD 1007/2023). Cálculo 100% en el navegador. Incluye plugin de huella para WooCommerce.">
     <meta name="keywords" content="verifactu, aeat, orden hac 1177 2024, huella sha-256, validador verifactu, plugin woocommerce verifactu, factura electronica espana, ley antifraude">
     <link rel="canonical" href="https://gwi1i.github.io/verifactu/">
 
     <!-- Open Graph / Redes Sociales -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Validador Oficial VeriFactu & Generador de Huella SHA-256 (AEAT v0.1.2)">
-    <meta property="og:description" content="Validador gratuito y client-side para la huella encadenada SHA-256 y código QR oficial de la AEAT. Sin servidores externos.">
+    <meta property="og:title" content="Validador VeriFactu: huella SHA-256 y código QR (AEAT v0.1.2)">
+    <meta property="og:description" content="Validador gratuito y client-side para la huella encadenada SHA-256 y la URL del código QR de la AEAT. Sin servidores externos.">
     <meta property="og:url" content="https://gwi1i.github.io/verifactu/">
     <meta property="og:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Validador Oficial VeriFactu & Generador de Huella SHA-256 (AEAT v0.1.2)">
+    <meta name="twitter:title" content="Validador VeriFactu: huella SHA-256 y código QR (AEAT v0.1.2)">
     <meta name="twitter:description" content="Herramienta técnica gratuita para validar huellas SHA-256 de facturas bajo la Orden HAC/1177/2024.">
     <meta name="twitter:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
 
@@ -31,7 +31,7 @@
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "Validador VeriFactu AEAT",
+          "name": "Validador VeriFactu (huella y QR)",
           "url": "https://gwi1i.github.io/verifactu/",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "All",
@@ -45,9 +45,10 @@
         },
         {
           "@type": "SoftwareApplication",
-          "name": "VeriFactu Express for WooCommerce",
+          "name": "Gwii Invoice Hash for WooCommerce",
           "operatingSystem": "WordPress / WooCommerce",
           "applicationCategory": "Plugin",
+          "description": "Plugin GPLv2 que calcula la huella SHA-256 encadenada y la URL del código QR de la AEAT en cada pedido completado de WooCommerce. No genera ni remite el registro XML a la AEAT.",
           "offers": {
             "@type": "Offer",
             "price": "29.00",
@@ -71,15 +72,15 @@
               "name": "¿Qué es el código QR obligatorio de VeriFactu?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Es un código QR reglamentario que codifica la URL oficial de la Sede Electrónica de la AEAT para el cotejo directo de la validez del registro de facturación por parte del receptor."
+                "text": "Es un código QR que codifica la URL de cotejo de la Sede Electrónica de la AEAT (https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR) con cuatro parámetros: nif, numserie, fecha e importe, según el capítulo VIII de la Orden HAC/1177/2024. La huella no forma parte del QR."
               }
             },
             {
               "@type": "Question",
-              "name": "¿Cómo adaptar una tienda WooCommerce a la Ley Antifraude y VeriFactu?",
+              "name": "¿Qué hace el plugin Gwii Invoice Hash para WooCommerce?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Instalando el plugin VeriFactu Express for WooCommerce. Se integra con HPOS, calculando de forma 100% local la huella encadenada y generando el QR oficial de la AEAT en cada pedido sin intermediarios externos."
+                "text": "Calcula en el propio servidor la huella SHA-256 encadenada de cada pedido completado y la URL del código QR de la AEAT, y las guarda en los metadatos del pedido. No genera ni remite el registro XML a la AEAT, por lo que no sustituye por sí solo a un sistema de facturación adaptado al RD 1007/2023."
               }
             },
             {
@@ -300,13 +301,13 @@
             <div>
                 <div class="brand-name">VeriFactu Linter & Hash Validator</div>
                 <div style="font-size: 0.75rem; color: var(--text-muted);">
-                    Especificación Canónica Oficial <span class="badge-norm">AEAT v0.1.2 (27/08/2024)</span> & Orden HAC/1177/2024
+                    Especificación técnica <span class="badge-norm">AEAT v0.1.2 (27/08/2024)</span> & Orden HAC/1177/2024
                 </div>
             </div>
         </div>
         <div class="privacy-badge">
             <span class="pulse-dot"></span>
-            100% Client-Side · Contrastado contra Vectores Oficiales AEAT
+            100% en tu navegador · Contrastado con los vectores de prueba de la AEAT
         </div>
     </header>
 
@@ -315,15 +316,18 @@
             <div>
                 <strong style="color: #fff; font-size: 1.05rem;">🛒 ¿Tienes una tienda online en WooCommerce?</strong>
                 <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 4px; max-width: 650px;">
-                    Adapta tu tienda en 1 minuto a la <strong>Orden HAC/1177/2024</strong> con <strong>VeriFactu Express</strong>. Cálculo automático de huella SHA-256 encadenada y código QR de cotejo en cada pedido completado.
+                    <strong>Gwii Invoice Hash for WooCommerce</strong> calcula la huella SHA-256 encadenada y la URL del código QR de la AEAT (Orden HAC/1177/2024) en cada pedido completado, dentro de tu propio WordPress. Es una utilidad de cálculo: no genera ni remite el registro XML a la AEAT, así que por sí sola no convierte la tienda en un sistema de facturación adaptado al RD 1007/2023.
                 </p>
             </div>
             <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-                <a href="verifactu-express.zip" download class="btn-chip" style="padding: 0.65rem 1.1rem; font-size: 0.82rem; text-decoration: none; border-color: rgba(255,255,255,0.2); color: #fff;">
-                    📦 Descarga Community (.zip)
+                <a href="gwii-invoice-hash-for-woocommerce.zip" download class="btn-chip" style="padding: 0.65rem 1.1rem; font-size: 0.82rem; text-decoration: none; border-color: rgba(255,255,255,0.2); color: #fff;">
+                    📦 Descargar plugin (.zip, GPLv2)
+                </a>
+                <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/" target="_blank" rel="noopener" class="btn-chip" style="padding: 0.65rem 1.1rem; font-size: 0.82rem; text-decoration: none; border-color: rgba(255,255,255,0.2); color: #fff;">
+                    🔌 Ver en WordPress.org
                 </a>
                 <a href="https://gwindor7.gumroad.com/l/tnvuko" target="_blank" rel="noopener" class="btn-validate" style="padding: 0.65rem 1.3rem; font-size: 0.85rem; text-decoration: none; margin: 0; background: linear-gradient(135deg, #10B981, #06B6D4);">
-                    ⭐ Licencia Comercial Pro (29€)
+                    ⭐ Soporte y actualizaciones (29€)
                 </a>
             </div>
         </div>
@@ -331,7 +335,7 @@
         <!-- Competitor Comparison Card -->
         <div style="margin-top: 1rem; background: rgba(17, 24, 39, 0.75); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan);">⚡ ¿POR QUÉ VERIFACTU EXPRESS FRENTE A OTROS MÓDULOS?</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan);">⚡ ¿POR QUÉ GWII INVOICE HASH FRENTE A OTROS MÓDULOS?</span>
                 <span style="font-size: 0.75rem; color: var(--text-muted);">Sin cuotas mensuales recurrentes</span>
             </div>
             <div style="overflow-x: auto;">
@@ -339,15 +343,15 @@
                     <thead>
                         <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted); text-align: left;">
                             <th style="padding: 6px 8px;">Característica</th>
-                            <th style="padding: 6px 8px; color: var(--accent-rose);">Otros Plugins (FactuPress, Finseed, etc.)</th>
-                            <th style="padding: 6px 8px; color: var(--accent-emerald);">🛡️ VeriFactu Express</th>
+                            <th style="padding: 6px 8px; color: var(--accent-rose);">Servicios SaaS de facturación</th>
+                            <th style="padding: 6px 8px; color: var(--accent-emerald);">🛡️ Gwii Invoice Hash</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                             <td style="padding: 6px 8px;"><strong>Coste / Modelo</strong></td>
                             <td style="padding: 6px 8px; color: var(--accent-rose);">Suscripción de 15€/mes (180€/año)</td>
-                            <td style="padding: 6px 8px; color: var(--accent-emerald); font-weight: 700;">Pago Único de 29€ (De por vida)</td>
+                            <td style="padding: 6px 8px; color: var(--accent-emerald); font-weight: 700;">Gratis (GPLv2) · Soporte opcional 29€ una vez</td>
                         </tr>
                         <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                             <td style="padding: 6px 8px;"><strong>Límite de Facturas</strong></td>
@@ -361,8 +365,13 @@
                         </tr>
                         <tr>
                             <td style="padding: 6px 8px;"><strong>Rigor Técnico</strong></td>
-                            <td style="padding: 6px 8px;">Caja negra sin acceso a código fuente</td>
-                            <td style="padding: 6px 8px; color: var(--accent-emerald); font-weight: 700;">Verificado contra Vectores AEAT v0.1.2</td>
+                            <td style="padding: 6px 8px;">Código cerrado (según proveedor)</td>
+                            <td style="padding: 6px 8px; color: var(--accent-emerald); font-weight: 700;">Código abierto, contrastado con los vectores AEAT v0.1.2</td>
+                        </tr>
+                        <tr style="border-top: 1px solid rgba(255,255,255,0.04);">
+                            <td style="padding: 6px 8px;"><strong>Remisión del registro a la AEAT</strong></td>
+                            <td style="padding: 6px 8px;">Sí (según proveedor)</td>
+                            <td style="padding: 6px 8px; color: var(--accent-amber); font-weight: 700;">No: solo huella y URL del QR</td>
                         </tr>
                     </tbody>
                 </table>
@@ -375,12 +384,12 @@
         <section class="panel">
             <div class="panel-title">
                 <span>📄 Parámetros del Registro de Facturación</span>
-                <span class="badge-norm">Vectores Oficiales AEAT</span>
+                <span class="badge-norm">Vectores de prueba AEAT</span>
             </div>
 
             <div class="preset-buttons">
-                <button class="btn-chip active" onclick="loadPreset('caso1_aeat', this)">🏛️ Caso 1 Oficial AEAT (Primer Registro)</button>
-                <button class="btn-chip" onclick="loadPreset('caso2_aeat', this)">🔗 Caso 2 Oficial AEAT (Encadenado)</button>
+                <button class="btn-chip active" onclick="loadPreset('caso1_aeat', this)">🏛️ Caso 1 AEAT (primer registro)</button>
+                <button class="btn-chip" onclick="loadPreset('caso2_aeat', this)">🔗 Caso 2 AEAT (encadenado)</button>
                 <button class="btn-chip" onclick="loadPreset('error_1154', this)">🚨 Simular Error 1154 (Rectificativa)</button>
                 <button class="btn-chip" onclick="loadPreset('error_1109', this)">🚨 Simular Error 1109 (NIF Inválido)</button>
             </div>
@@ -439,7 +448,7 @@
             </div>
 
             <button class="btn-validate" onclick="runDiagnostics()">
-                ⚡ Calcular Huella Canónica AEAT & Validar Formato
+                ⚡ Calcular huella y validar formato
             </button>
         </section>
 
@@ -447,7 +456,7 @@
         <section class="panel">
             <div class="panel-title">
                 <span>🔍 Resultado del Cálculo & Verificación QR</span>
-                <span id="diagnosticTag" class="badge-norm" style="color: var(--accent-emerald);">AEAT Ready</span>
+                <span id="diagnosticTag" class="badge-norm" style="color: var(--text-muted);">Pendiente</span>
             </div>
 
             <div id="diagnosticsList"></div>
@@ -467,7 +476,7 @@
             <div class="qr-section">
                 <div id="qrcode-container"></div>
                 <div style="flex: 1;">
-                    <div style="font-size: 0.82rem; font-weight: 700; margin-bottom: 0.25rem;">URL Oficial Código QR VeriFactu:</div>
+                    <div style="font-size: 0.82rem; font-weight: 700; margin-bottom: 0.25rem;">URL del código QR (Orden HAC/1177/2024, cap. VIII):</div>
                     <div class="hash-display" id="qrUrlDisplay" style="font-size: 0.72rem; max-height: 85px; overflow-y: auto;">
                         ...
                     </div>
@@ -500,7 +509,7 @@
                     📚 Guía Técnica y Preguntas Frecuentes sobre VeriFactu (Orden HAC/1177/2024)
                 </h2>
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">
-                    Referencia normativa oficial para desarrolladores, gestorías y tiendas online que emiten facturas bajo el RD 1007/2023.
+                    Referencia técnica para desarrolladores, gestorías y tiendas online que emiten facturas bajo el RD 1007/2023.
                 </p>
             </div>
 
@@ -521,7 +530,7 @@
                         ¿Qué es el código QR reglamentario y cómo funciona?
                     </h3>
                     <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
-                        El RD 1007/2023 exige que todas las facturas impresas o en PDF incluyan un código QR con una URL reglamentaria. Esta URL apunta a la <strong>Sede Electrónica de la AEAT</strong> con los parámetros de la factura, permitiendo al cliente final verificar en tiempo real si el registro ha sido remitido o custodiado legalmente.
+                        El RD 1007/2023 exige que las facturas incluyan un código QR (ISO/IEC 18004, nivel M, entre 30 y 40 mm) con la URL de cotejo de la <strong>Sede Electrónica de la AEAT</strong>: <code>https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR</code> con los parámetros <code>nif</code>, <code>numserie</code>, <code>fecha</code> (DD-MM-AAAA) e <code>importe</code>. La huella no forma parte del QR. Debajo del código debe figurar «VERI*FACTU» o «Factura verificable en la sede electrónica de la AEAT», según la modalidad.
                     </p>
                 </div>
 
@@ -530,17 +539,26 @@
                         ¿Cómo solucionar el Error 1109 y el Error 1154?
                     </h3>
                     <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
-                        <strong>Error 1109:</strong> Ocurre cuando el NIF/CIF emisor no supera el algoritmo de control oficial de la AEAT.<br>
+                        <strong>Error 1109:</strong> Ocurre cuando el NIF/CIF emisor no supera el dígito de control.<br>
                         <strong>Error 1154:</strong> Aparece en facturas rectificativas (R1 a R5) cuando no se especifica el número de la factura original que se rectifica o anula.
+                    </p>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 1.25rem;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-amber); margin-bottom: 0.5rem;">
+                        ¿Qué NO hace esta herramienta ni el plugin?
+                    </h3>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+                        No generan el XML del registro de facturación, no lo firman, no lo remiten a la AEAT, no llevan el registro de eventos ni emiten la declaración responsable que exige el RD 1007/2023. Solo comprueban el formato de los campos y calculan la huella y la URL del QR. Plazos actuales: obligatorio desde el <strong>1 de enero de 2027</strong> para contribuyentes del Impuesto sobre Sociedades y desde el <strong>1 de julio de 2027</strong> para el resto.
                     </p>
                 </div>
 
                 <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem;">
                     <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.5rem;">
-                        ¿Por qué elegir VeriFactu Express para WooCommerce?
+                        ¿Por qué elegir Gwii Invoice Hash para WooCommerce?
                     </h3>
                     <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
-                        A diferencia de los módulos que cobran suscripciones mensuales de 15€ a 25€/mes (180€–300€/año) y envían tus datos a servidores externos, <strong>VeriFactu Express</strong> es de <strong>pago único (29€)</strong>, 100% privado y procesa todas las firmas criptográficas directamente dentro de tu propio servidor.
+                        A diferencia de los módulos que cobran suscripciones mensuales de 15€ a 25€/mes (180€–300€/año) y envían tus datos a servidores externos, <strong>Gwii Invoice Hash</strong> es <strong>gratuito (GPLv2)</strong>, con soporte y actualizaciones opcionales por <strong>29€ en un único pago</strong>, y calcula la huella encadenada dentro de tu propio servidor. Cubre solo la huella y el QR: la generación y remisión del registro XML a la AEAT quedan fuera de su alcance.
                     </p>
                 </div>
             </div>
@@ -548,6 +566,9 @@
     </div>
 
     <script>
+        // URL de cotejo del código QR fijada en el capítulo VIII de la Orden HAC/1177/2024 (producción).
+        const QR_BASE_URL = 'https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR';
+
         const presets = {
             caso1_aeat: {
                 nif: "89890001K",
@@ -582,11 +603,11 @@
                 total: "123.45",
                 hashAnt: "3C464DAF61ACB827C65FDA19F352A4E3BDC2C640E9E9FC4CC058073F38F12F60",
                 timestamp: "2024-01-01T19:20:35+01:00",
-                refRect: "", // Triggers 1154
+                refRect: "",
                 expectedHash: null
             },
             error_1109: {
-                nif: "99999999Z", // Invalid Checksum
+                nif: "99999999Z",
                 num: "F2026-0001",
                 fecha: "01-01-2024",
                 tipo: "F1",
@@ -599,7 +620,17 @@
             }
         };
 
-        let currentExpectedHash = "3C464DAF61ACB827C65FDA19F352A4E3BDC2C640E9E9FC4CC058073F38F12F60";
+        let currentExpectedHash = presets.caso1_aeat.expectedHash;
+
+        // Escape para insertar valores del formulario en HTML.
+        function esc(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
         function loadPreset(key, btn) {
             if (btn) {
@@ -625,50 +656,99 @@
 
         document.getElementById('tipoFactura').addEventListener('change', toggleRectificativaUI);
 
+        // Al editar cualquier campo a mano, el vector esperado deja de aplicar.
+        document.querySelectorAll('#nifEmisor, #numFactura, #fechaExpedicion, #tipoFactura, #cuotaIva, #importeTotal, #hashAnterior, #timestampIso')
+            .forEach(el => el.addEventListener('input', () => { currentExpectedHash = null; }));
+
         function toggleRectificativaUI() {
             const tipo = document.getElementById('tipoFactura').value;
-            const rectGroup = document.getElementById('rectificativaGroup');
-            if (tipo.startsWith('R')) {
-                rectGroup.style.display = 'flex';
-            } else {
-                rectGroup.style.display = 'none';
-            }
+            document.getElementById('rectificativaGroup').style.display = tipo.startsWith('R') ? 'flex' : 'none';
         }
 
+        /* ---------------- Validaciones de formato ---------------- */
+
+        // DNI, NIE, NIF K/L/M y CIF con comprobación del dígito o letra de control.
         function validateSpanishTaxId(nif) {
             nif = nif.toUpperCase().trim();
             if (!/^[A-Z0-9]{9}$/.test(nif)) return false;
 
             const letterMap = "TRWAGMYFPDXBNJZSQVHLCKE";
-            
-            // DNI (8 numbers + letter)
+
             if (/^[0-9]{8}[A-Z]$/.test(nif)) {
-                const num = parseInt(nif.substr(0, 8), 10);
-                return nif[8] === letterMap[num % 23];
-            }
-            
-            // NIE (X, Y, Z + 7 numbers + letter)
-            if (/^[XYZ][0-9]{7}[A-Z]$/.test(nif)) {
-                let prefix = nif[0] === 'X' ? '0' : nif[0] === 'Y' ? '1' : '2';
-                const num = parseInt(prefix + nif.substr(1, 7), 10);
-                return nif[8] === letterMap[num % 23];
+                return nif[8] === letterMap[parseInt(nif.substr(0, 8), 10) % 23];
             }
 
-            // CIF (A-W + 7 numbers + control)
+            if (/^[XYZ][0-9]{7}[A-Z]$/.test(nif)) {
+                const prefix = { X: '0', Y: '1', Z: '2' }[nif[0]];
+                return nif[8] === letterMap[parseInt(prefix + nif.substr(1, 7), 10) % 23];
+            }
+
+            if (/^[KLM][0-9]{7}[A-Z]$/.test(nif)) {
+                return nif[8] === letterMap[parseInt(nif.substr(1, 7), 10) % 23];
+            }
+
             if (/^[ABCDEFGHJNPQRSUVW][0-9]{7}[0-9A-J]$/.test(nif)) {
-                return true;
+                const digits = nif.substr(1, 7);
+                let sum = 0;
+                for (let i = 0; i < 7; i++) {
+                    const d = parseInt(digits[i], 10);
+                    if (i % 2 === 0) {
+                        const x = d * 2;
+                        sum += Math.floor(x / 10) + (x % 10);
+                    } else {
+                        sum += d;
+                    }
+                }
+                const control = (10 - (sum % 10)) % 10;
+                const controlLetter = "JABCDEFGHI"[control];
+                const type = nif[0];
+                const c = nif[8];
+                if ("PQRSNW".includes(type)) return c === controlLetter;
+                if ("ABEH".includes(type)) return c === String(control);
+                return c === String(control) || c === controlLetter;
             }
 
             return false;
         }
 
-        async function calculateSHA256(str) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+        // DD-MM-AAAA con fecha real.
+        function validateFecha(fecha) {
+            const m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(fecha);
+            if (!m) return false;
+            const d = parseInt(m[1], 10), mo = parseInt(m[2], 10), y = parseInt(m[3], 10);
+            const date = new Date(Date.UTC(y, mo - 1, d));
+            return date.getUTCFullYear() === y && date.getUTCMonth() === mo - 1 && date.getUTCDate() === d;
         }
+
+        // AAAA-MM-DDThh:mm:ss+hh:mm (ISO 8601 con huso obligatorio, sin 'Z').
+        function validateTimestamp(ts) {
+            const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})([+-])(\d{2}):(\d{2})$/.exec(ts);
+            if (!m) return false;
+            const y = +m[1], mo = +m[2], d = +m[3], h = +m[4], mi = +m[5], s = +m[6], oh = +m[8], om = +m[9];
+            const date = new Date(Date.UTC(y, mo - 1, d));
+            if (date.getUTCFullYear() !== y || date.getUTCMonth() !== mo - 1 || date.getUTCDate() !== d) return false;
+            return h < 24 && mi < 60 && s < 60 && oh < 24 && om < 60;
+        }
+
+        // Importe con punto decimal, dos decimales y hasta 12 enteros (formato del esquema AEAT).
+        function validateImporte(v) {
+            return /^-?\d{1,12}\.\d{2}$/.test(v);
+        }
+
+        function validateHash(h) {
+            return /^[0-9A-F]{64}$/.test(h);
+        }
+
+        async function calculateSHA256(str) {
+            if (!window.crypto || !window.crypto.subtle) {
+                throw new Error('Web Crypto no disponible: abre la página por HTTPS o desde localhost.');
+            }
+            const data = new TextEncoder().encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+        }
+
+        /* ---------------- Diagnóstico ---------------- */
 
         async function runDiagnostics() {
             const nif = document.getElementById('nifEmisor').value.trim();
@@ -681,103 +761,143 @@
             const timestamp = document.getElementById('timestampIso').value.trim();
             const refRect = document.getElementById('facturaRectificadaRef').value.trim();
 
+            const checks = {
+                nif: validateSpanishTaxId(nif),
+                num: num.length > 0 && num.length <= 60,
+                fecha: validateFecha(fecha),
+                cuota: validateImporte(cuota),
+                total: validateImporte(total),
+                hashAnt: hashAnt === '' || validateHash(hashAnt),
+                timestamp: validateTimestamp(timestamp),
+                refRect: !tipo.startsWith('R') || refRect.length > 0
+            };
+
             const errors = [];
 
-            // Validation checks
-            if (!validateSpanishTaxId(nif)) {
+            if (!checks.nif) {
                 errors.push({
-                    code: 'ERR_1109',
-                    title: 'Código 1109: Identificación fiscal incorrecta o NIF/CIF no conforme',
-                    desc: `El NIF "${nif}" no cumple el algoritmo de control oficial de la AEAT.`
+                    title: 'Código 1109: NIF del emisor no válido',
+                    desc: `El NIF "${nif}" no supera el dígito de control (DNI, NIE o CIF).`
+                });
+            }
+            if (!checks.num) {
+                errors.push({
+                    title: 'NumSerieFactura vacío o demasiado largo',
+                    desc: 'El número de serie y factura es obligatorio y admite un máximo de 60 caracteres.'
+                });
+            }
+            if (!checks.fecha) {
+                errors.push({
+                    title: 'FechaExpedicionFactura con formato incorrecto',
+                    desc: `Se esperaba una fecha real con formato DD-MM-AAAA. Recibido: "${fecha}".`
+                });
+            }
+            if (!checks.cuota || !checks.total) {
+                errors.push({
+                    title: 'Importe con formato incorrecto',
+                    desc: 'CuotaTotal e ImporteTotal deben usar punto decimal y exactamente dos decimales (ej. 123.45). En el hash se usa el texto tal cual, así que "123.4" y "123.40" producen huellas distintas.'
+                });
+            }
+            if (!checks.hashAnt) {
+                errors.push({
+                    title: 'Huella anterior no válida',
+                    desc: `La huella del registro anterior debe ser hexadecimal de 64 caracteres en mayúsculas. Recibido: ${hashAnt.length} caracteres.`
+                });
+            }
+            if (!checks.timestamp) {
+                errors.push({
+                    title: 'FechaHoraHusoGenRegistro con formato incorrecto',
+                    desc: `Se esperaba ISO 8601 con huso horario explícito, por ejemplo 2024-01-01T19:20:30+01:00. Recibido: "${timestamp}".`
+                });
+            }
+            if (!checks.refRect) {
+                errors.push({
+                    title: 'Código 1154: falta la referencia a la factura rectificada',
+                    desc: 'En facturas rectificativas (R1 a R5) es obligatorio indicar la serie y número de la factura original rectificada.'
                 });
             }
 
-            if (tipo.startsWith('R') && !refRect) {
-                errors.push({
-                    code: 'ERR_1154',
-                    title: 'Código 1154: Falta referencia obligatoria a la factura rectificada',
-                    desc: 'En facturas rectificativas (R1-R5) es mandatorio indicar la serie y número de la factura original rectificada.'
-                });
-            }
-
-            if (hashAnt && hashAnt.length !== 64) {
-                errors.push({
-                    code: 'ERR_HASH_LEN',
-                    title: 'Longitud de Huella Anterior Incorrecta',
-                    desc: `La huella de encadenamiento debe ser un string hexadecimal de 64 caracteres. Detectados: ${hashAnt.length}.`
-                });
-            }
-
-            // Official Canonical String (AEAT v0.1.2 Apartado 3.a):
-            // IDEmisorFactura=...&NumSerieFactura=...&FechaExpedicionFactura=...&TipoFactura=...&CuotaTotal=...&ImporteTotal=...&Huella=...&FechaHoraHusoGenRegistro=...
+            // Cadena canónica (AEAT v0.1.2, apartado 3.a). Los valores se recortan y se concatenan tal cual.
             const plainString = `IDEmisorFactura=${nif}&NumSerieFactura=${num}&FechaExpedicionFactura=${fecha}&TipoFactura=${tipo}&CuotaTotal=${cuota}&ImporteTotal=${total}&Huella=${hashAnt}&FechaHoraHusoGenRegistro=${timestamp}`;
-            document.getElementById('plainStringDisplay').innerText = plainString;
+            document.getElementById('plainStringDisplay').textContent = plainString;
 
-            // Compute SHA-256
-            const computedHash = await calculateSHA256(plainString);
-            document.getElementById('hashResult').innerText = computedHash;
+            let computedHash;
+            try {
+                computedHash = await calculateSHA256(plainString);
+            } catch (e) {
+                document.getElementById('hashResult').textContent = 'No se pudo calcular la huella';
+                document.getElementById('diagnosticTag').textContent = 'Error';
+                document.getElementById('diagnosticTag').style.color = 'var(--accent-rose)';
+                document.getElementById('diagnosticsList').innerHTML = '<div class="diagnostic-card"><strong>🚨 ' + esc(e.message) + '</strong></div>';
+                return;
+            }
+            document.getElementById('hashResult').textContent = computedHash;
 
-            // QR URL official format
-            const qrUrl = `https://sede.agenciatributaria.gob.es/Sede/verifactu/consulta?nif=${encodeURIComponent(nif)}&num=${encodeURIComponent(num)}&fecha=${encodeURIComponent(fecha)}&total=${total}&hash=${computedHash.substring(0, 16)}`;
-            document.getElementById('qrUrlDisplay').innerText = qrUrl;
+            // URL del QR: cuatro parámetros (nif, numserie, fecha, importe). La huella no forma parte del QR.
+            const qrParams = new URLSearchParams({ nif, numserie: num, fecha, importe: total });
+            const qrUrl = `${QR_BASE_URL}?${qrParams.toString()}`;
+            document.getElementById('qrUrlDisplay').textContent = qrUrl;
 
-            // Render QR
             const qrContainer = document.getElementById('qrcode-container');
             qrContainer.innerHTML = '';
-            QRCode.toCanvas(qrUrl, { width: 140, margin: 1 }, function (err, canvas) {
-                if (!err) qrContainer.appendChild(canvas);
-            });
+            if (typeof QRCode !== 'undefined') {
+                QRCode.toCanvas(qrUrl, { width: 140, margin: 1, errorCorrectionLevel: 'M' }, function (err, canvas) {
+                    if (!err) qrContainer.appendChild(canvas);
+                });
+            } else {
+                qrContainer.innerHTML = '<div style="width:140px; font-size:0.7rem; color: var(--text-muted);">No se pudo cargar la librería de QR (sin conexión). La URL de la derecha sigue siendo válida.</div>';
+            }
 
-            // Diagnostic list
             const diagList = document.getElementById('diagnosticsList');
+            const tag = document.getElementById('diagnosticTag');
+
             if (errors.length > 0) {
-                document.getElementById('diagnosticTag').innerText = `${errors.length} Error(es) Detectados`;
-                document.getElementById('diagnosticTag').style.color = 'var(--accent-rose)';
+                tag.textContent = `${errors.length} error(es) de formato`;
+                tag.style.color = 'var(--accent-rose)';
                 diagList.innerHTML = errors.map(e => `
                     <div class="diagnostic-card">
-                        <strong>🚨 ${e.title}</strong>
-                        <p style="margin-top: 4px; color: var(--text-main); font-size: 0.8rem;">${e.desc}</p>
+                        <strong>🚨 ${esc(e.title)}</strong>
+                        <p style="margin-top: 4px; color: var(--text-main); font-size: 0.8rem;">${esc(e.desc)}</p>
                     </div>
                 `).join('');
             } else {
                 let matchMessage = "";
                 if (currentExpectedHash) {
                     if (computedHash === currentExpectedHash) {
-                        matchMessage = `<br><span style="color: var(--accent-cyan); font-weight:700;">🎯 ¡COINCIDENCIA EXACTA 100% BIT A BIT CON EL VECTOR OFICIAL DE LA AEAT!</span> (${currentExpectedHash})`;
+                        matchMessage = `<br><span style="color: var(--accent-cyan); font-weight:700;">🎯 Coincide con el vector de prueba oficial de la AEAT</span> (${esc(currentExpectedHash)})`;
                     } else {
-                        matchMessage = `<br><span style="color: var(--accent-amber); font-weight:700;">⚠️ Discrepancia con vector esperado: ${currentExpectedHash}</span>`;
+                        matchMessage = `<br><span style="color: var(--accent-amber); font-weight:700;">⚠️ No coincide con el vector esperado: ${esc(currentExpectedHash)}</span>`;
                     }
                 }
 
-                document.getElementById('diagnosticTag').innerText = `100% Conforme (AEAT v0.1.2)`;
-                document.getElementById('diagnosticTag').style.color = 'var(--accent-emerald)';
+                tag.textContent = 'Formato correcto';
+                tag.style.color = 'var(--accent-emerald)';
                 diagList.innerHTML = `
                     <div class="diagnostic-pass">
-                        <strong>✅ ¡Registro de Factura Oficialmente Verificado!</strong>
+                        <strong>✅ Sin errores en las comprobaciones locales</strong>
                         <p style="margin-top: 4px; color: var(--text-main); font-size: 0.8rem;">
-                            Cadena canónica, orden de campos, codificación UTF-8 y huella SHA-256 validadas bajo la especificación técnica oficial v0.1.2 de la Agencia Tributaria.${matchMessage}
+                            Formato de los 8 campos, cadena canónica y huella SHA-256 calculados según el documento técnico AEAT v0.1.2. Esta herramienta no comprueba el contenido fiscal ni la remisión del registro a la AEAT.${matchMessage}
                         </p>
                     </div>
                 `;
             }
 
-            // Spec table
             const fields = [
-                ['IDEmisorFactura', nif, validateSpanishTaxId(nif) ? 'OK' : 'ERROR'],
-                ['NumSerieFactura', num, num.length > 0 ? 'OK' : 'ERROR'],
-                ['FechaExpedicionFactura', fecha, fecha.length === 10 ? 'OK' : 'ERROR'],
-                ['TipoFactura', tipo, 'OK'],
-                ['CuotaTotal', cuota, 'OK'],
-                ['ImporteTotal', total, 'OK'],
-                ['Huella (Anterior)', hashAnt ? hashAnt.substring(0, 12) + '...' : '(Vacío - Primer Registro)', 'OK'],
-                ['FechaHoraHusoGenRegistro', timestamp, timestamp.includes('T') ? 'OK' : 'ERROR']
+                ['IDEmisorFactura', nif, checks.nif],
+                ['NumSerieFactura', num, checks.num],
+                ['FechaExpedicionFactura', fecha, checks.fecha],
+                ['TipoFactura', tipo, true],
+                ['CuotaTotal', cuota, checks.cuota],
+                ['ImporteTotal', total, checks.total],
+                ['Huella (anterior)', hashAnt ? hashAnt.substring(0, 12) + '…' : '(vacío: primer registro)', checks.hashAnt],
+                ['FechaHoraHusoGenRegistro', timestamp, checks.timestamp]
             ];
 
-            document.getElementById('specTableBody').innerHTML = fields.map(([name, val, st]) => `
+            document.getElementById('specTableBody').innerHTML = fields.map(([name, val, ok]) => `
                 <tr>
-                    <td><strong>${name}</strong></td>
-                    <td><code>${val}</code></td>
-                    <td style="color: ${st === 'OK' ? 'var(--accent-emerald)' : 'var(--accent-rose)'}; font-weight:700;">${st}</td>
+                    <td><strong>${esc(name)}</strong></td>
+                    <td><code>${esc(val)}</code></td>
+                    <td style="color: ${ok ? 'var(--accent-emerald)' : 'var(--accent-rose)'}; font-weight:700;">${ok ? 'OK' : 'ERROR'}</td>
                 </tr>
             `).join('');
         }
