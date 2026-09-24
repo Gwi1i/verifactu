@@ -5,7 +5,7 @@ Tags: verifactu, aeat, invoice, hash, woocommerce
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ This plugin is developed independently by an individual developer. It is not aff
 
 * **SHA-256 chained hash** built from the 8-field canonical string defined in the specification. The calculation matches the three official test vectors published by the AEAT.
 * **Sequential invoice numbering**, independent from the WooCommerce order ID.
-* **Database lock** (MySQL `GET_LOCK`) so that two orders completed at the same time cannot break the chain.
+* **Database lock** (MySQL `GET_LOCK`, or an atomic row lock on SQLite) so that two orders completed at the same time cannot break the chain.
 * **Timestamps in the WordPress time zone** (+01:00 / +02:00 in Spain).
 * **Cancellation record** chained to the previous hash when a registered order is cancelled or fully refunded.
 * **QR verification URL** with the four official parameters: `nif`, `numserie`, `fecha` and `importe`.
@@ -66,6 +66,9 @@ Yes. The data is stored as order meta (`_verifactu_num_serie`, `_verifactu_hash`
 Yes. On activation the plugin copies the settings and the last hash saved by version 1.0.x, so the chain continues without gaps.
 
 == Changelog ==
+
+= 1.1.1 =
+* Fixed: no hash was generated on sites whose database does not support GET_LOCK (SQLite, including WordPress Playground). The plugin now falls back to an atomic row lock in the options table.
 
 = 1.1.0 =
 * Renamed to Gwii Invoice Hash for WooCommerce. Option names now use the `gwiih_` prefix; previous settings and the last hash are migrated automatically.

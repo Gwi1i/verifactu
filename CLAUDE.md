@@ -10,7 +10,7 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
 - **Validador web** (`index.html`): 100% en el navegador. Comprueba el formato de un registro de
   facturación, calcula la huella SHA-256 encadenada (documento técnico AEAT v0.1.2) y genera la URL
   del código QR. Publicado en https://gwi1i.github.io/verifactu/ (GitHub Pages, rama `main`, raíz).
-- **Plugin de WooCommerce** `gwii-invoice-hash-for-woocommerce/` (GPLv2, versión 1.1.0): calcula la
+- **Plugin de WooCommerce** `gwii-invoice-hash-for-woocommerce/` (GPLv2, versión 1.1.1): calcula la
   huella encadenada y la URL del QR en cada pedido completado. Aprobado en WordPress.org el
   23/09/2026, slug `gwii-invoice-hash-for-woocommerce`.
 - **Gumroad** https://gwindor7.gumroad.com/l/tnvuko: producto publicado (29 €) que vende soporte y
@@ -51,7 +51,7 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
 ## Pendiente
 
 1. ~~Publicar en el SVN de WordPress.org~~ Hecho el 24/09/2026: trunk + assets (r3711853) y
-   `tags/1.1.0` (r3711855). Página pública: https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/
+   `tags/1.1.0` (r3711855). Versión 1.1.1 (bloqueo alternativo para SQLite): r3711874 + `tags/1.1.1` (r3711875). Página pública: https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/
 2. Cada versión nueva: subir el zip también a Gumroad (pestaña Content), actualizar `Stable tag`,
    `Version`, changelog y `svn-deploy/trunk`, y publicar con
    `powershell -ExecutionPolicy Bypass -File svn-deploy/publicar_wporg.ps1` (cambiar `$version`).

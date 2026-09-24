@@ -3,7 +3,7 @@
  * Plugin Name: Gwii Invoice Hash for WooCommerce
  * Plugin URI: https://gwi1i.github.io/verifactu/
  * Description: Computes the SHA-256 chained invoice hash and the AEAT QR verification URL (Spanish VeriFactu format, Orden HAC/1177/2024) for each completed WooCommerce order. Calculation utility only: it does not submit records to the AEAT. Not affiliated with AEAT or WooCommerce.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: gwii
  * Author URI: https://profiles.wordpress.org/gwii/
  * License: GPLv2 or later
@@ -33,13 +33,22 @@ if (!defined('ABSPATH')) {
  */
 class Gwii_Invoice_Hash {
 
-    const VERSION = '1.1.0';
+    const VERSION = '1.1.1';
 
     /** URL de cotejo del código QR fijada en la Orden HAC/1177/2024 (entorno de producción). */
     const QR_BASE_URL = 'https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR';
 
     /** Segundos máximos de espera para obtener el bloqueo de la cadena. */
     const LOCK_TIMEOUT = 10;
+
+    /** Segundos tras los que el bloqueo por fila se considera abandonado. */
+    const LOCK_STALE = 60;
+
+    /** Fila de la tabla de opciones que hace de bloqueo cuando no hay GET_LOCK. */
+    const ROW_LOCK_OPTION = 'gwiih_chain_lock';
+
+    /** Tipo de bloqueo obtenido: 'mysql' (GET_LOCK) o 'row' (fila en la tabla de opciones). */
+    private $lock_mode = 'mysql';
 
     public function __construct() {
         add_action('plugins_loaded', array($this, 'maybe_migrate_options'));
@@ -380,17 +389,61 @@ class Gwii_Invoice_Hash {
 
     /**
      * Bloqueo a nivel de base de datos para que dos pedidos simultáneos no rompan el encadenamiento.
+     * Usa GET_LOCK de MySQL/MariaDB, que solo responde '1' (obtenido) o '0' (tiempo agotado).
+     * Cualquier otra respuesta significa que la base de datos no lo admite: NULL en caso de error, o
+     * '1=1' con el traductor SQLite de WordPress Playground. Entonces se usa un bloqueo por fila.
      */
     private function acquire_lock() {
         global $wpdb;
         // Bloqueo de servidor MySQL/MariaDB: no existe API de WordPress para esto y no debe cachearse.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, %d)', $this->lock_name(), self::LOCK_TIMEOUT));
-        return (string) $result === '1';
+        $result = $result === null ? null : (string) $result;
+        if ($result !== '1' && $result !== '0') {
+            $this->lock_mode = 'row';
+            return $this->acquire_row_lock();
+        }
+        $this->lock_mode = 'mysql';
+        return $result === '1';
+    }
+
+    /**
+     * Bloqueo portable: INSERT IGNORE sobre option_name, que es clave única, así que solo un proceso
+     * consigue insertar la fila. Caduca a los LOCK_STALE segundos por si un proceso muere sin liberarlo.
+     * No se usa add_option() porque su ON DUPLICATE KEY UPDATE sobrescribe la fila existente.
+     */
+    private function acquire_row_lock() {
+        global $wpdb;
+        $deadline = microtime(true) + self::LOCK_TIMEOUT;
+        do {
+            $now = time();
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query($wpdb->prepare(
+                "DELETE FROM {$wpdb->options} WHERE option_name = %s AND option_value < %d",
+                self::ROW_LOCK_OPTION,
+                $now - self::LOCK_STALE
+            ));
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $inserted = $wpdb->query($wpdb->prepare(
+                "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %d, 'no')",
+                self::ROW_LOCK_OPTION,
+                $now
+            ));
+            if ((int) $inserted === 1) {
+                return true;
+            }
+            usleep(100000);
+        } while (microtime(true) < $deadline);
+        return false;
     }
 
     private function release_lock() {
         global $wpdb;
+        if ($this->lock_mode === 'row') {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name = %s", self::ROW_LOCK_OPTION));
+            return;
+        }
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query($wpdb->prepare('SELECT RELEASE_LOCK(%s)', $this->lock_name()));
     }

@@ -67,10 +67,20 @@ class WC_Order {
 }
 
 class FakeWPDB {
-    public $prefix = 'wp_'; public $lock_result = '1'; public $locks = 0; public $releases = 0; public $last_lock_name = '';
+    public $prefix = 'wp_'; public $options = 'wp_options'; public $lock_result = '1'; public $locks = 0; public $releases = 0; public $last_lock_name = '';
+    // Bloqueo por fila (SQLite): valor de la fila gwiih_chain_lock o null si no existe.
+    public $row_lock = null; public $row_inserts = 0; public $row_deletes = 0;
     public function prepare($q, ...$args) { return vsprintf(str_replace(array('%s', '%d'), array("'%s'", '%d'), $q), $args); }
     public function get_var($q) { if (strpos($q, 'GET_LOCK') !== false) { $this->locks++; preg_match("/GET_LOCK\('([^']+)'/", $q, $m); $this->last_lock_name = $m[1]; return $this->lock_result; } return null; }
-    public function query($q) { if (strpos($q, 'RELEASE_LOCK') !== false) { $this->releases++; } return 1; }
+    public function query($q) {
+        if (strpos($q, 'RELEASE_LOCK') !== false) { $this->releases++; return 1; }
+        if (strpos($q, 'INSERT IGNORE') !== false) { $this->row_inserts++; if ($this->row_lock !== null) { return 0; } preg_match("/VALUES \('[^']+', (\d+)/", $q, $m); $this->row_lock = (int) $m[1]; return 1; }
+        if (strpos($q, 'DELETE') !== false) {
+            if (preg_match('/option_value < (-?\d+)/', $q, $m)) { if ($this->row_lock !== null && $this->row_lock < (int) $m[1]) { $this->row_lock = null; return 1; } return 0; }
+            $this->row_deletes++; $had = $this->row_lock !== null; $this->row_lock = null; return $had ? 1 : 0;
+        }
+        return 1;
+    }
 }
 $wpdb = new FakeWPDB();
 
@@ -290,6 +300,46 @@ $GLOBALS['wp_options']['gwiih_nif_emisor'] = '';
 ob_start(); $plugin->maybe_show_config_notice(); $html = ob_get_clean();
 ok(strpos($html, 'notice-warning') !== false, 'aviso cuando falta el NIF');
 $GLOBALS['wp_options']['gwiih_nif_emisor'] = 'B12345674';
+
+/* ------------------------------------------------------------------ */
+
+section('Bloqueo por fila cuando no hay GET_LOCK (SQLite / Playground)');
+$wpdb->lock_result = null;
+$GLOBALS['wp_now'] = '2027-01-15 10:05:00';
+$GLOBALS['wc_orders'][600] = new WC_Order(600, '121', '21');
+$prev = get_option('gwiih_last_hash'); $ins = $wpdb->row_inserts; $dels = $wpdb->row_deletes; $rel = $wpdb->releases;
+$wpdb->lock_result = '1=1'; // Respuesta real del traductor SQLite de Playground.
+$plugin->process_order_alta(600);
+$o6 = $GLOBALS['wc_orders'][600];
+eq($o6->get_meta('_verifactu_num_serie'), 'F2026-000005', 'sin GET_LOCK: se genera el registro igualmente');
+eq($o6->get_meta('_verifactu_hash_anterior'), $prev, 'sin GET_LOCK: encadena con la huella anterior');
+eq($wpdb->row_inserts, $ins + 1, 'sin GET_LOCK: inserta la fila de bloqueo');
+eq($wpdb->row_deletes, $dels + 1, 'sin GET_LOCK: borra la fila al terminar');
+eq($wpdb->releases, $rel, 'sin GET_LOCK: no llama a RELEASE_LOCK');
+eq($wpdb->row_lock, null, 'sin GET_LOCK: la fila de bloqueo no queda huérfana');
+
+$plugin->process_order_anulacion(600);
+ok($o6->get_meta('_verifactu_anulacion_hash') !== '', 'sin GET_LOCK: también genera la anulación');
+eq($wpdb->row_lock, null, 'sin GET_LOCK: la anulación libera la fila');
+
+// Bloqueo abandonado hace más de LOCK_STALE segundos: se recupera.
+$wpdb->row_lock = time() - 120;
+$GLOBALS['wc_orders'][601] = new WC_Order(601, '10', '1.74');
+$plugin->process_order_alta(601);
+eq($GLOBALS['wc_orders'][601]->get_meta('_verifactu_num_serie'), 'F2026-000006', 'bloqueo abandonado: se recupera y se registra');
+
+// Bloqueo en uso por otro proceso: espera LOCK_TIMEOUT segundos y desiste sin tocar la cadena.
+$wpdb->row_lock = time() + 3600;
+$GLOBALS['wc_orders'][602] = new WC_Order(602, '10', '1.74');
+$t0 = microtime(true);
+$plugin->process_order_alta(602);
+$o602 = $GLOBALS['wc_orders'][602];
+eq($o602->get_meta('_verifactu_hash'), '', 'bloqueo ocupado: no se genera huella');
+ok(microtime(true) - $t0 >= Gwii_Invoice_Hash::LOCK_TIMEOUT - 0.5, 'bloqueo ocupado: espera antes de desistir');
+ok($wpdb->row_lock !== null, 'bloqueo ocupado: no borra el bloqueo ajeno');
+ok(count($o602->notes) === 1 && strpos($o602->notes[0], 'bloqueo') !== false, 'bloqueo ocupado: nota explicativa');
+$wpdb->row_lock = null;
+$wpdb->lock_result = '1';
 
 /* ------------------------------------------------------------------ */
 
