@@ -50,13 +50,12 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
 
 ## Pendiente
 
-1. **Publicar en el SVN de WordPress.org** (repositorio
-   `https://plugins.svn.wordpress.org/gwii-invoice-hash-for-woocommerce`). Requiere que el usuario
-   active la verificación en dos pasos en su perfil de WordPress.org, genere la contraseña de SVN y
-   tenga `svn.exe` (TortoiseSVN con herramientas de línea de comandos). Luego:
-   `powershell -ExecutionPolicy Bypass -File svn-deploy/publicar_wporg.ps1`.
-2. Cada versión nueva: subir el zip también a Gumroad (pestaña Content) y actualizar `Stable tag`,
-   `Version`, changelog y `svn-deploy/trunk`.
+1. ~~Publicar en el SVN de WordPress.org~~ Hecho el 24/09/2026: trunk + assets (r3711853) y
+   `tags/1.1.0` (r3711855). Página pública: https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/
+2. Cada versión nueva: subir el zip también a Gumroad (pestaña Content), actualizar `Stable tag`,
+   `Version`, changelog y `svn-deploy/trunk`, y publicar con
+   `powershell -ExecutionPolicy Bypass -File svn-deploy/publicar_wporg.ps1` (cambiar `$version`).
+   El commit SVN pide la contraseña de SVN: la escribe siempre el usuario en su terminal.
 3. Probar el plugin en un WordPress real con HPOS (completar, cancelar y reembolsar un pedido).
 
 ## Cómo trabajar
