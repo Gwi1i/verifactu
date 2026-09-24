@@ -1,12 +1,12 @@
 # 🚀 Guía Rápida de Despliegue Público (100% Gratuito)
 
-Esta carpeta (`deploy_web`) contiene todo lo necesario para poner la herramienta online en un servidor público con certificado SSL (HTTPS) gratuito en menos de 1 minuto.
+La raíz de este repositorio contiene todo lo necesario para poner la herramienta online en un servidor público con certificado SSL (HTTPS) gratuito en menos de 1 minuto.
 
 ---
 
 ### Opción 1: Netlify Drop (La más rápida, sin comandos, 30 segundos)
 1. Entra en tu navegador a: **[https://app.netlify.com/drop](https://app.netlify.com/drop)**
-2. Arrastra la carpeta `deploy_web` directamente a la ventana del navegador.
+2. Arrastra la carpeta del repositorio directamente a la ventana del navegador.
 3. ¡Listo! Te dará una URL pública del tipo `https://verifactu-linter.netlify.app` funcionando al instante con descarga del plugin incluida.
 
 ---
@@ -23,7 +23,7 @@ Esta carpeta (`deploy_web`) contiene todo lo necesario para poner la herramienta
 
 ### Opción 3: GitHub Pages
 1. Crea un repositorio público en GitHub (por ejemplo, `verifactu-linter`).
-2. Sube los archivos de esta carpeta (`index.html`, `gwii-invoice-hash-for-woocommerce.zip`, `robots.txt`, `sitemap.xml`).
+2. Sube los archivos de la raíz (`index.html`, `gwii-invoice-hash-for-woocommerce.zip`, `robots.txt`, `sitemap.xml`).
 3. En GitHub, ve a **Settings > Pages > Branch: main > Save**.
 4. En 60 segundos tu herramienta estará disponible en: `https://tu-usuario.github.io/verifactu-linter`.
 

@@ -1,0 +1,6 @@
+# Proyecto no relacionado (auditor de contratos); se mantiene fuera del repositorio publico
+aegis-auditor/
+
+__pycache__/
+*.pyc
+.claude/

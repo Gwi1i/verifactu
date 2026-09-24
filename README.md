@@ -80,6 +80,24 @@ El plugin es **GPLv2** y puede usarse libremente, también en tiendas comerciale
 
 Según el Real Decreto-ley 15/2025, la obligación de usar sistemas de facturación adaptados entra en vigor el **1 de enero de 2027** para contribuyentes del Impuesto sobre Sociedades y el **1 de julio de 2027** para el resto.
 
+## Trabajar desde otro PC
+
+Todo el proyecto (sitio, validador, código fuente del plugin, pruebas y script de publicación en WordPress.org) está en este repositorio. La raíz es lo que publica GitHub Pages en https://gwi1i.github.io/verifactu/.
+
+```bash
+git clone https://github.com/Gwi1i/verifactu.git
+```
+
+Herramientas necesarias en Windows (todas por winget):
+
+```bash
+winget install --id Python.Python.3.12
+winget install --id PHP.PHP.8.3
+winget install --id TortoiseSVN.TortoiseSVN --custom "ADDLOCAL=ALL"
+```
+
+Comprobaciones: `python test_verifactu_spec.py` y `php tests/test_plugin.php`. Publicación en WordPress.org: `svn-deploy/publicar_wporg.ps1`. El contexto completo del proyecto para Claude Code está en `CLAUDE.md`.
+
 ## Licencia
 
 [GNU General Public License v2.0](LICENSE). El código se proporciona tal cual, sin garantía.
