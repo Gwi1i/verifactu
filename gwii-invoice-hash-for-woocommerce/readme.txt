@@ -5,7 +5,7 @@ Tags: verifactu, aeat, invoice, hash, woocommerce
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ Yes. The data is stored as order meta (`_verifactu_num_serie`, `_verifactu_hash`
 Yes. On activation the plugin copies the settings and the last hash saved by version 1.0.x, so the chain continues without gaps.
 
 == Changelog ==
+
+= 1.1.2 =
+* The settings page warns when the WordPress time zone is not a Spanish one (Madrid, Canary Islands or Ceuta), since the invoice date and the record timestamp are taken in that zone. Fixed offsets such as UTC+1 also trigger the warning because they ignore daylight saving time.
 
 = 1.1.1 =
 * Fixed: no hash was generated on sites whose database does not support GET_LOCK (SQLite, including WordPress Playground). The plugin now falls back to an atomic row lock in the options table.

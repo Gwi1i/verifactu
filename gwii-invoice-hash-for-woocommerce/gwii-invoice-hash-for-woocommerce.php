@@ -3,7 +3,7 @@
  * Plugin Name: Gwii Invoice Hash for WooCommerce
  * Plugin URI: https://gwi1i.github.io/verifactu/
  * Description: Computes the SHA-256 chained invoice hash and the AEAT QR verification URL (Spanish VeriFactu format, Orden HAC/1177/2024) for each completed WooCommerce order. Calculation utility only: it does not submit records to the AEAT. Not affiliated with AEAT or WooCommerce.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: gwii
  * Author URI: https://profiles.wordpress.org/gwii/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ if (!defined('ABSPATH')) {
  */
 class Gwii_Invoice_Hash {
 
-    const VERSION = '1.1.1';
+    const VERSION = '1.1.2';
 
     /** URL de cotejo del código QR fijada en la Orden HAC/1177/2024 (entorno de producción). */
     const QR_BASE_URL = 'https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR';
@@ -187,6 +187,33 @@ class Gwii_Invoice_Hash {
         echo '</p></div>';
     }
 
+    /**
+     * Zonas horarias de España. Un desfase fijo (+01:00) o UTC no sirve: no cambia al horario de verano.
+     */
+    public static function es_zona_horaria_espanola($timezone) {
+        return in_array($timezone, array('Europe/Madrid', 'Atlantic/Canary', 'Africa/Ceuta'), true);
+    }
+
+    /**
+     * Aviso en los ajustes si la zona horaria de WordPress no es una de España, porque la fecha de
+     * expedición y FechaHoraHusoGenRegistro se toman en esa zona.
+     */
+    public function render_timezone_notice() {
+        $timezone = wp_timezone_string();
+        if (self::es_zona_horaria_espanola($timezone)) {
+            return;
+        }
+        $url = admin_url('options-general.php#timezone_string');
+        echo '<div class="notice notice-warning inline" style="max-width:700px; margin:16px 0;"><p>';
+        echo wp_kses_post(sprintf(
+            /* translators: 1: zona horaria configurada en WordPress, 2: URL de Ajustes > Generales */
+            __('La zona horaria de WordPress es <strong>%1$s</strong>. La fecha de expedición y la marca temporal de cada registro se toman en esa zona, así que en una tienda española saldrán con un huso incorrecto. Elige «Madrid» (o «Canarias») en <a href="%2$s">Ajustes &gt; Generales</a>. Un desfase fijo como UTC+1 tampoco sirve, porque no cambia al horario de verano.', 'gwii-invoice-hash-for-woocommerce'),
+            esc_html($timezone),
+            esc_url($url)
+        ));
+        echo '</p></div>';
+    }
+
     public function render_settings_page() {
         if (!current_user_can('manage_woocommerce')) {
             return;
@@ -204,6 +231,8 @@ class Gwii_Invoice_Hash {
                 <p><?php esc_html_e('Este plugin calcula la huella SHA-256 encadenada de cada pedido completado y la URL del código QR de cotejo según la Orden HAC/1177/2024, y las guarda en los metadatos del pedido.', 'gwii-invoice-hash-for-woocommerce'); ?></p>
                 <p><?php esc_html_e('No genera el XML del registro de facturación, no lo firma, no lo remite a la AEAT ni lleva el registro de eventos. Por sí solo no convierte la tienda en un sistema de facturación adaptado al RD 1007/2023.', 'gwii-invoice-hash-for-woocommerce'); ?></p>
             </div>
+
+            <?php $this->render_timezone_notice(); ?>
 
             <?php settings_errors('gwiih_nif_emisor'); ?>
 

@@ -15,7 +15,7 @@
 $ErrorActionPreference = 'Stop'
 
 $slug    = 'gwii-invoice-hash-for-woocommerce'
-$version = '1.1.1'
+$version = '1.1.2'
 $repo    = "https://plugins.svn.wordpress.org/$slug"
 $user    = 'gwii'
 $origen  = $PSScriptRoot

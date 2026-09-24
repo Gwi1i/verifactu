@@ -50,6 +50,7 @@ function settings_fields($g) {}
 function do_settings_sections($g) {}
 function selected($a, $b) { echo $a === $b ? 'selected' : ''; }
 function current_datetime() { return new DateTimeImmutable($GLOBALS['wp_now'], new DateTimeZone($GLOBALS['wp_timezone'])); }
+function wp_timezone_string() { return $GLOBALS['wp_timezone']; }
 function wc_get_page_screen_id($t) { return 'woocommerce_page_wc-orders'; }
 function wc_get_order($id) { return isset($GLOBALS['wc_orders'][$id]) ? $GLOBALS['wc_orders'][$id] : false; }
 if (!function_exists('mb_substr')) { function mb_substr($s, $a, $b = null) { return $b === null ? substr($s, $a) : substr($s, $a, $b); } }
@@ -293,6 +294,22 @@ ob_start(); $plugin->render_settings_page(); $html = ob_get_clean();
 ok(strpos($html, 'No genera el XML') !== false, 'ajustes: aviso de alcance');
 ok(strpos($html, 'Siguiente: F2026-000005') !== false, 'ajustes: muestra el siguiente número');
 ok(strpos($html, get_option('gwiih_last_hash')) !== false, 'ajustes: muestra la última huella');
+ok(strpos($html, 'Ajustes &gt; Generales') === false, 'ajustes: sin aviso de zona horaria con Europe/Madrid');
+
+foreach (array('Europe/Madrid', 'Atlantic/Canary', 'Africa/Ceuta') as $tz) {
+    ok(Gwii_Invoice_Hash::es_zona_horaria_espanola($tz), "zona española: $tz");
+}
+foreach (array('UTC', '+00:00', '+01:00', 'Europe/Paris', '') as $tz) {
+    ok(!Gwii_Invoice_Hash::es_zona_horaria_espanola($tz), "zona no española: '$tz'");
+}
+$GLOBALS['wp_timezone'] = 'UTC';
+ob_start(); $plugin->render_settings_page(); $html = ob_get_clean();
+ok(strpos($html, 'notice-warning') !== false && strpos($html, '<strong>UTC</strong>') !== false, 'ajustes: aviso de zona horaria con UTC');
+ok(strpos($html, 'options-general.php#timezone_string') !== false, 'ajustes: el aviso enlaza a Ajustes > Generales');
+$GLOBALS['wp_timezone'] = '+01:00';
+ob_start(); $plugin->render_timezone_notice(); $html = ob_get_clean();
+ok(strpos($html, '<strong>+01:00</strong>') !== false, 'aviso también con desfase fijo +01:00');
+$GLOBALS['wp_timezone'] = 'Europe/Madrid';
 
 ob_start(); $plugin->maybe_show_config_notice(); $html = ob_get_clean();
 eq($html, '', 'sin aviso cuando el NIF está configurado');
