@@ -99,7 +99,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
     <style>
         :root {
             --bg-body: #0A0E17;
@@ -291,6 +291,31 @@
             border: 1px solid var(--border); padding: 4px 8px; text-align: left;
         }
         .spec-table th { background: rgba(255, 255, 255, 0.03); color: var(--text-muted); }
+        .spec-table td, code, .diagnostic-card, .diagnostic-pass { overflow-wrap: anywhere; }
+
+        /* Los hijos de una rejilla pueden encogerse; sin esto, los inputs imponen su ancho mínimo. */
+        .main-container > *, .grid-2 > *, .grid-3 > *, .form-group { min-width: 0; }
+        input, select { width: 100%; min-width: 0; }
+
+        /* Móvil y tableta */
+        @media (max-width: 960px) {
+            .main-container { grid-template-columns: 1fr; gap: 1.25rem; }
+        }
+
+        @media (max-width: 640px) {
+            header { padding: 0.85rem 1rem; flex-wrap: wrap; gap: 0.6rem; position: static; }
+            .brand-name { font-size: 1.05rem; }
+            .privacy-badge { font-size: 0.72rem; border-radius: 12px; }
+            .main-container { padding: 0 1rem; margin: 1.25rem auto; }
+            .panel { padding: 1.1rem; }
+            .panel-title { flex-wrap: wrap; gap: 0.5rem; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            input, select { font-size: 16px; } /* evita el zoom automático de iOS al enfocar */
+            .qr-section { flex-direction: column; align-items: stretch; }
+            #qrcode-container { align-self: center; }
+            .wrap-mobile { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .pad-mobile { padding: 1.1rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -311,8 +336,8 @@
         </div>
     </header>
 
-    <div style="max-width: 1400px; margin: 1.5rem auto 0; padding: 0 1.5rem;">
-        <div style="background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(16, 185, 129, 0.15)); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1.25rem 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div class="wrap-mobile" style="max-width: 1400px; margin: 1.5rem auto 0; padding: 0 1.5rem;">
+        <div class="pad-mobile" style="background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(16, 185, 129, 0.15)); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1.25rem 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
                 <strong style="color: #fff; font-size: 1.05rem;">🛒 ¿Tienes una tienda online en WooCommerce?</strong>
                 <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 4px; max-width: 650px;">
@@ -333,8 +358,8 @@
         </div>
 
         <!-- Competitor Comparison Card -->
-        <div style="margin-top: 1rem; background: rgba(17, 24, 39, 0.75); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <div class="pad-mobile" style="margin-top: 1rem; background: rgba(17, 24, 39, 0.75); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem 1rem; margin-bottom: 0.75rem;">
                 <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan);">⚡ ¿POR QUÉ GWII INVOICE HASH FRENTE A OTROS MÓDULOS?</span>
                 <span style="font-size: 0.75rem; color: var(--text-muted);">Sin cuotas mensuales recurrentes</span>
             </div>
@@ -379,7 +404,7 @@
         </div>
     </div>
 
-
+    <main class="main-container">
         <!-- Input Form Panel -->
         <section class="panel">
             <div class="panel-title">
@@ -499,11 +524,11 @@
                 </table>
             </div>
         </section>
-    </div>
+    </main>
 
     <!-- Guía Técnica y Preguntas Frecuentes (SEO & Contenido) -->
-    <div style="max-width: 1400px; margin: 0 auto 3rem; padding: 0 1.5rem;">
-        <section class="panel" style="background: rgba(17, 24, 39, 0.6); border: 1px solid var(--border); border-radius: 16px; padding: 2rem;">
+    <div class="wrap-mobile" style="max-width: 1400px; margin: 0 auto 3rem; padding: 0 1.5rem;">
+        <section class="panel pad-mobile" style="background: rgba(17, 24, 39, 0.6); border: 1px solid var(--border); border-radius: 16px; padding: 2rem;">
             <div style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
                 <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
                     📚 Guía Técnica y Preguntas Frecuentes sobre VeriFactu (Orden HAC/1177/2024)
@@ -513,7 +538,7 @@
                 </p>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 1.5rem;">
                 <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem;">
                     <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.5rem;">
                         ¿Cómo se calcula la huella SHA-256 encadenada?
@@ -567,7 +592,7 @@
                 <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 1rem;">
                     📖 Guías detalladas
                 </h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 0.75rem;">
                     <a href="guias/huella-verifactu-sha256.html" style="display: block; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-decoration: none; color: var(--text-main); font-size: 0.9rem; font-weight: 600;">Cómo se calcula la huella SHA-256, paso a paso →</a>
                     <a href="guias/huella-verifactu-no-coincide.html" style="display: block; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-decoration: none; color: var(--text-main); font-size: 0.9rem; font-weight: 600;">La huella no coincide: 9 errores típicos →</a>
                     <a href="guias/codigo-qr-verifactu.html" style="display: block; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-decoration: none; color: var(--text-main); font-size: 0.9rem; font-weight: 600;">Código QR: URL, parámetros, tamaño y texto →</a>
