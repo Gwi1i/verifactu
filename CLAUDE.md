@@ -47,6 +47,12 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
 - **Plazos VeriFactu** (RDL 15/2025): 1 de enero de 2027 (Impuesto sobre Sociedades) y 1 de julio
   de 2027 (resto).
 - **Cuentas**: WordPress.org usuario `gwii`; GitHub `Gwi1i/verifactu`; Gumroad `gwindor7`.
+- **SEO y medición** (29/09/2026): la web tenía `sitemap.xml` y `robots.txt` apuntando al dominio
+  antiguo `verifactu-linter.vercel.app` (corregido y reenviado en Search Console). El contador es
+  GoatCounter con el código `gwii-verifactu` (panel: https://gwii-verifactu.goatcounter.com); la
+  cuenta la crea el usuario. Readme del plugin reescrito para que empiece por "VeriFactu"
+  (buscando "verifactu" en WordPress.org salía el 17º de 19). No cambiar el nombre visible del plugin
+  sin decisión del usuario: WordPress.org ya rechazó "VeriFactu Express".
 
 ## Pendiente
 
