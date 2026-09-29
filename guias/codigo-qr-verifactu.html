@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código QR de VeriFactu: URL, parámetros, tamaño y texto obligatorio</title>
+    <meta name="description" content="Qué lleva el código QR de VeriFactu: la URL de cotejo de la AEAT, los parámetros nif, numserie, fecha e importe y su formato, el tamaño (30 a 40 mm), el nivel de corrección y el texto que debe acompañarlo.">
+    <link rel="canonical" href="https://gwi1i.github.io/verifactu/guias/codigo-qr-verifactu.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Código QR de VeriFactu: URL, parámetros, tamaño y texto obligatorio">
+    <meta property="og:description" content="La URL de cotejo, los 4 parámetros, el tamaño y la leyenda del QR tributario.">
+    <meta property="og:url" content="https://gwi1i.github.io/verifactu/guias/codigo-qr-verifactu.html">
+    <meta property="og:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "Código QR de VeriFactu: URL, parámetros, tamaño y texto obligatorio",
+          "description": "La URL de cotejo de la AEAT, los parámetros nif, numserie, fecha e importe, el tamaño, el nivel de corrección y la leyenda del QR tributario.",
+          "inLanguage": "es",
+          "datePublished": "2026-09-29",
+          "dateModified": "2026-09-29",
+          "author": { "@type": "Person", "name": "gwii", "url": "https://profiles.wordpress.org/gwii/" },
+          "mainEntityOfPage": "https://gwi1i.github.io/verifactu/guias/codigo-qr-verifactu.html"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Validador VeriFactu", "item": "https://gwi1i.github.io/verifactu/" },
+            { "@type": "ListItem", "position": 2, "name": "Guías", "item": "https://gwi1i.github.io/verifactu/guias/" },
+            { "@type": "ListItem", "position": 3, "name": "Código QR", "item": "https://gwi1i.github.io/verifactu/guias/codigo-qr-verifactu.html" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Qué URL lleva el código QR de VeriFactu?",
+              "acceptedAnswer": { "@type": "Answer", "text": "En un sistema VERI*FACTU, https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR con los parámetros nif, numserie, fecha e importe. En un sistema no VERI*FACTU la ruta termina en ValidarQRNoVerifactu." }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Qué tamaño debe tener el QR de VeriFactu?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Entre 30x30 y 40x40 milímetros, según la norma ISO/IEC 18004 y con nivel de corrección de errores M." }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Qué texto acompaña al QR?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Encima, el texto «QR tributario». En los sistemas VERI*FACTU, además, la frase «Factura verificable en la sede electrónica de la AEAT» o «VERI*FACTU»." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="guia.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="brand" href="../"><span class="brand-icon">✓</span>Validador VeriFactu</a>
+            <nav class="site-nav" aria-label="Principal">
+                <a href="../">Validador</a>
+                <a href="./">Guías</a>
+                <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <nav class="breadcrumb" aria-label="Ruta"><a href="../">Validador</a> › <a href="./">Guías</a> › Código QR</nav>
+
+        <article>
+            <h1>Código QR de VeriFactu: URL, parámetros, tamaño y texto obligatorio</h1>
+            <p class="lede">El QR de una factura VeriFactu no contiene la factura ni la huella. Contiene una dirección web de la AEAT con cuatro datos de la factura, para que el cliente pueda cotejarla en la sede electrónica.</p>
+            <p class="meta">Actualizada el 29 de septiembre de 2026 · Basada en la Orden HAC/1177/2024 y en las especificaciones del QR publicadas por la AEAT.</p>
+
+            <div class="toc">
+                <strong>En esta guía</strong>
+                <ol>
+                    <li><a href="#url">La URL de cotejo</a></li>
+                    <li><a href="#parametros">Los 4 parámetros y su formato</a></li>
+                    <li><a href="#ejemplo">Un ejemplo completo</a></li>
+                    <li><a href="#imprimir">Tamaño, corrección de errores y texto</a></li>
+                    <li><a href="#errores">Errores frecuentes</a></li>
+                </ol>
+            </div>
+
+            <h2 id="url">1. La URL de cotejo</h2>
+            <p>La dirección depende de la modalidad del sistema de facturación y del entorno:</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Modalidad</th><th>Entorno</th><th>URL base</th></tr></thead>
+                    <tbody>
+                        <tr><td>VERI*FACTU</td><td>Producción</td><td><code>https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR</code></td></tr>
+                        <tr><td>No VERI*FACTU</td><td>Producción</td><td><code>https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQRNoVerifactu</code></td></tr>
+                        <tr><td>VERI*FACTU</td><td>Pruebas</td><td><code>https://prewww2.aeat.es/wlpl/TIKE-CONT/ValidarQR</code></td></tr>
+                        <tr><td>No VERI*FACTU</td><td>Pruebas</td><td><code>https://prewww2.aeat.es/wlpl/TIKE-CONT/ValidarQRNoVerifactu</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>En una factura real se usa siempre la de producción. La de pruebas sirve mientras desarrollas contra el entorno de pruebas de la AEAT.</p>
+
+            <h2 id="parametros">2. Los 4 parámetros y su formato</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Parámetro</th><th>Contenido</th><th>Formato</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>nif</code></td><td>NIF del emisor de la factura</td><td>9 caracteres, p. ej. <code>89890001K</code></td></tr>
+                        <tr><td><code>numserie</code></td><td>Serie y número de la factura</td><td>Tal cual, codificado para URL</td></tr>
+                        <tr><td><code>fecha</code></td><td>Fecha de expedición</td><td><code>DD-MM-AAAA</code></td></tr>
+                        <tr><td><code>importe</code></td><td>Importe total de la factura</td><td>Punto decimal y dos decimales, p. ej. <code>123.45</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Los valores se escriben en UTF-8 y se <strong>codifican para URL</strong> (percent-encoding). En la práctica, lo que más se nota es la serie: la barra de <code>12345678/G33</code> pasa a ser <code>%2F</code>, y los espacios, <code>%20</code>.</p>
+            <div class="callout">
+                <span class="callout-title">Ojo con la diferencia respecto a la huella</span>
+                <p>En la <a href="huella-verifactu-sha256.html">huella</a> la serie va sin codificar (<code>12345678/G33</code>). En el QR va codificada (<code>12345678%2FG33</code>). Son dos usos distintos del mismo dato.</p>
+            </div>
+
+            <h2 id="ejemplo">3. Un ejemplo completo</h2>
+            <p>Para una factura del NIF <code>89890001K</code>, número <code>12345678/G33</code>, expedida el 1 de enero de 2024 por 123,45 €:</p>
+            <pre><code>https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR?nif=89890001K&amp;numserie=12345678%2FG33&amp;fecha=01-01-2024&amp;importe=123.45</code></pre>
+            <p>En JavaScript, con <code>encodeURIComponent</code> (codifica los espacios como <code>%20</code>; <code>URLSearchParams</code> los convertiría en <code>+</code>):</p>
+            <pre><code>const base = 'https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR';
+const params = {
+  nif: '89890001K',
+  numserie: '12345678/G33',
+  fecha: '01-01-2024',
+  importe: (123.45).toFixed(2),
+};
+const query = Object.entries(params)
+  .map(([k, v]) =&gt; `${k}=${encodeURIComponent(v)}`)
+  .join('&amp;');
+const urlQR = `${base}?${query}`;</code></pre>
+            <p>En PHP, <code>http_build_query($params, '', '&amp;', PHP_QUERY_RFC3986)</code>. En Python, <code>urllib.parse.urlencode(params, quote_via=urllib.parse.quote)</code>.</p>
+            <p>Con esa URL, cualquier librería de QR genera la imagen. El <a href="../">validador</a> te muestra la URL y el QR de cualquier registro.</p>
+
+            <h2 id="imprimir">4. Tamaño, corrección de errores y texto</h2>
+            <ul>
+                <li><strong>Tamaño:</strong> entre 30×30 mm y 40×40 mm.</li>
+                <li><strong>Norma:</strong> ISO/IEC 18004, con <strong>nivel de corrección de errores M</strong>.</li>
+                <li><strong>Encima del código:</strong> el texto <strong>«QR tributario»</strong>, para distinguirlo de otros QR que tenga la factura.</li>
+                <li><strong>En los sistemas VERI*FACTU:</strong> la frase <strong>«Factura verificable en la sede electrónica de la AEAT»</strong> o su forma corta <strong>«VERI*FACTU»</strong>, con un tamaño de letra claramente visible.</li>
+            </ul>
+            <p>El QR debe figurar en las facturas que expide el sistema, incluidas las simplificadas (tiques).</p>
+
+            <h2 id="errores">5. Errores frecuentes</h2>
+            <ul>
+                <li><strong>Meter la huella en el QR.</strong> No forma parte de la URL.</li>
+                <li><strong>Fecha en formato AAAA-MM-DD.</strong> El parámetro <code>fecha</code> es <code>DD-MM-AAAA</code>.</li>
+                <li><strong>Importe con coma o sin decimales</strong> (<code>123,45</code> o <code>123</code>). Debe ser <code>123.45</code> o <code>123.00</code>.</li>
+                <li><strong>No codificar la serie.</strong> Una serie con <code>/</code>, <code>&amp;</code>, <code>#</code> o espacios rompe la URL si no se codifica.</li>
+                <li><strong>Usar la URL de pruebas en producción</strong>, o la de VERI*FACTU en un sistema que no remite los registros.</li>
+                <li><strong>Imprimirlo demasiado pequeño</strong> en un tique térmico. Por debajo de 30 mm incumple la norma y puede no leerse.</li>
+            </ul>
+
+            <section class="cta">
+                <h2>Genera la URL y el QR de tu factura</h2>
+                <p>Introduce los datos en el validador y obtendrás la URL de cotejo, el QR y la huella, con los errores de formato marcados. Todo se calcula en tu navegador.</p>
+                <p><a class="btn" href="../">Abrir el validador</a><a class="btn secondary" href="verifactu-woocommerce.html">VeriFactu en WooCommerce</a></p>
+            </section>
+
+            <section class="related">
+                <h2>Guías relacionadas</h2>
+                <div class="card-grid">
+                    <a class="card" href="huella-verifactu-sha256.html"><strong>Cómo se calcula la huella SHA-256</strong><span>Los 8 campos, el formato y los ejemplos de la AEAT con su resultado.</span></a>
+                    <a class="card" href="plazos-verifactu-2027.html"><strong>Plazos de VeriFactu 2027</strong><span>A quién afecta, desde cuándo y qué pasa si no te adaptas.</span></a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <p>Herramienta independiente. No está afiliada a la Agencia Tributaria (AEAT) ni avalada por ella. Consulta siempre la normativa y la documentación técnica de la AEAT.</p>
+        <p><a href="../">Validador VeriFactu</a> · <a href="./">Guías</a> · <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin para WooCommerce</a></p>
+    </footer>
+    <script data-goatcounter="https://gwii-verifactu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

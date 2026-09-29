@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La huella VeriFactu no coincide: 9 errores típicos y cómo detectarlos</title>
+    <meta name="description" content="Tu huella SHA-256 de VeriFactu no da la esperada. Los errores más habituales: importes, fechas, huso horario, espacios, codificación, mayúsculas y encadenamiento. Con ejemplos de cómo cambia el resultado.">
+    <link rel="canonical" href="https://gwi1i.github.io/verifactu/guias/huella-verifactu-no-coincide.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="La huella VeriFactu no coincide: 9 errores típicos">
+    <meta property="og:description" content="Importes, fechas, huso horario, espacios, codificación y encadenamiento: qué revisar.">
+    <meta property="og:url" content="https://gwi1i.github.io/verifactu/guias/huella-verifactu-no-coincide.html">
+    <meta property="og:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "La huella VeriFactu no coincide: 9 errores típicos y cómo detectarlos",
+          "description": "Los errores de formato más habituales al calcular la huella SHA-256 de VeriFactu, con ejemplos de cómo cambia el resultado.",
+          "inLanguage": "es",
+          "datePublished": "2026-09-29",
+          "dateModified": "2026-09-29",
+          "author": { "@type": "Person", "name": "gwii", "url": "https://profiles.wordpress.org/gwii/" },
+          "mainEntityOfPage": "https://gwi1i.github.io/verifactu/guias/huella-verifactu-no-coincide.html"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Validador VeriFactu", "item": "https://gwi1i.github.io/verifactu/" },
+            { "@type": "ListItem", "position": 2, "name": "Guías", "item": "https://gwi1i.github.io/verifactu/guias/" },
+            { "@type": "ListItem", "position": 3, "name": "La huella no coincide", "item": "https://gwi1i.github.io/verifactu/guias/huella-verifactu-no-coincide.html" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Por qué mi huella VeriFactu no coincide con la esperada?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Casi siempre por el formato del texto: importes con coma o con un número distinto de decimales, fecha en AAAA-MM-DD, marca temporal en UTC o sin huso, espacios, codificación distinta de UTF-8, resultado en minúsculas, campos en otro orden o una huella anterior equivocada." }
+            },
+            {
+              "@type": "Question",
+              "name": "¿123.4 y 123.40 dan la misma huella?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. La huella se calcula sobre el texto, así que cualquier diferencia de formato cambia el resultado por completo. Usa exactamente el mismo texto que en el XML del registro." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="guia.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="brand" href="../"><span class="brand-icon">✓</span>Validador VeriFactu</a>
+            <nav class="site-nav" aria-label="Principal">
+                <a href="../">Validador</a>
+                <a href="./">Guías</a>
+                <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <nav class="breadcrumb" aria-label="Ruta"><a href="../">Validador</a> › <a href="./">Guías</a> › La huella no coincide</nav>
+
+        <article>
+            <h1>La huella VeriFactu no coincide: 9 errores típicos y cómo detectarlos</h1>
+            <p class="lede">SHA-256 no perdona: basta un carácter distinto en la cadena para obtener una huella completamente diferente. Si tu resultado no cuadra, el problema casi nunca es el algoritmo, sino el texto que le pasas.</p>
+            <p class="meta">Actualizada el 29 de septiembre de 2026.</p>
+
+            <div class="callout ok">
+                <span class="callout-title">Primero, descarta tu implementación</span>
+                <p>Calcula el caso 1 de la AEAT. Debe darte <code>3C464DAF61ACB827C65FDA19F352A4E3BDC2C640E9E9FC4CC058073F38F12F60</code>. Si no te da eso, el fallo está en cómo construyes la cadena o en cómo aplicas SHA-256. Tienes la cadena exacta en la <a href="huella-verifactu-sha256.html#ejemplos">guía de la huella</a>.</p>
+            </div>
+
+            <p>Todos los ejemplos de esta página parten del caso 1 y cambian un solo detalle, para que veas que cualquier diferencia cambia la huella entera.</p>
+
+            <h2 id="importes">1. Importes con otro formato</h2>
+            <p>Es el error más común. La huella usa el texto del importe, no su valor numérico:</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th><code>ImporteTotal</code></th><th>Huella resultante</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>123.45</code></td><td><code>3C464DAF…F12F60</code> (la correcta)</td></tr>
+                        <tr><td><code>123.40</code></td><td><code>A6E02E87…830372</code></td></tr>
+                        <tr><td><code>123.4</code></td><td><code>435A16D5…13F1AE</code></td></tr>
+                        <tr><td><code>123,40</code></td><td><code>3B1369D7…61D00C</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>Solución:</strong> formatea siempre con punto y dos decimales (<code>number_format($x, 2, '.', '')</code> en PHP, <code>x.toFixed(2)</code> en JavaScript) y usa ese mismo texto en el XML. Revisa también <code>CuotaTotal</code>: si hay varios tipos de IVA, es la suma de todas las cuotas.</p>
+
+            <h2 id="fecha">2. Fecha de expedición en otro formato</h2>
+            <p><code>FechaExpedicionFactura</code> va como <code>DD-MM-AAAA</code> (<code>01-01-2024</code>). Muchos sistemas guardan las fechas como <code>2024-01-01</code> o con barras (<code>01/01/2024</code>). Conviértela antes de montar la cadena.</p>
+
+            <h2 id="huso">3. Marca temporal en UTC o sin huso horario</h2>
+            <p><code>FechaHoraHusoGenRegistro</code> lleva el huso dentro del texto: <code>2024-01-01T19:20:30+01:00</code>. El mismo instante escrito en UTC (<code>2024-01-01T18:20:30+00:00</code>) da otra huella: <code>84389B4E…F1C5D3</code>.</p>
+            <p>Causas típicas:</p>
+            <ul>
+                <li>El servidor trabaja en UTC y el código usa la hora del sistema en lugar de la de España.</li>
+                <li>En WordPress, la zona horaria del sitio sigue en UTC, que es el valor por defecto de una instalación nueva. Ve a <strong>Ajustes › Generales</strong> y elige <strong>Madrid</strong> (o <strong>Canarias</strong>).</li>
+                <li>Se usa un desfase fijo como <code>UTC+1</code>, que no cambia al horario de verano.</li>
+                <li>La hora se escribe con <code>Z</code> al final o con milisegundos. Usa el formato con segundos y el huso con dos puntos.</li>
+            </ul>
+
+            <h2 id="espacios">4. Espacios al principio o al final</h2>
+            <p>Un espacio pegado al NIF o a la serie (<code>"89890001K "</code>) cambia la huella. Recorta cada valor antes de concatenarlo. Los espacios que estén dentro del valor, en cambio, se mantienen.</p>
+
+            <h2 id="codificacion">5. Codificación distinta de UTF-8</h2>
+            <p>Si la serie o el NIF tienen caracteres fuera del ASCII básico, como la ñ o letras acentuadas, la cadena debe pasarse a bytes en UTF-8. Si tu entorno usa Latin-1 o Windows-1252, esos caracteres producen otros bytes y otra huella.</p>
+
+            <h2 id="url">6. Codificar la cadena como URL</h2>
+            <p>La cadena de la huella <strong>no</strong> se codifica como URL. La serie <code>12345678/G33</code> va con su barra, no como <code>12345678%2FG33</code>. La codificación solo se aplica a la <a href="codigo-qr-verifactu.html">URL del código QR</a>.</p>
+
+            <h2 id="mayusculas">7. Resultado en minúsculas</h2>
+            <p>La mayoría de librerías devuelven el hexadecimal en minúsculas (<code>3c464daf…</code>). La huella se expresa en <strong>mayúsculas</strong>. Si comparas cadenas, conviértela antes. Si la vas a encadenar, recuerda que el siguiente registro incluirá este texto tal cual.</p>
+
+            <h2 id="orden">8. Campos en otro orden o que faltan</h2>
+            <p>El orden es fijo, y el campo <code>Huella</code> se incluye siempre, aunque vaya vacío (<code>…&amp;Huella=&amp;FechaHoraHusoGenRegistro=…</code>). Un error frecuente es omitirlo en el primer registro, u olvidar que la anulación tiene su propio conjunto de cinco campos (<code>IDEmisorFacturaAnulada</code>, <code>NumSerieFacturaAnulada</code>, <code>FechaExpedicionFacturaAnulada</code>, <code>Huella</code> y <code>FechaHoraHusoGenRegistro</code>).</p>
+
+            <h2 id="cadena">9. Encadenar con el registro equivocado</h2>
+            <p>El campo <code>Huella</code> lleva la huella del último registro generado por el sistema, sea de alta o de anulación. Errores habituales:</p>
+            <ul>
+                <li><strong>Encadenar por serie.</strong> No hay una cadena por cada serie de facturas.</li>
+                <li><strong>Saltarse las anulaciones.</strong> Tras anular una factura, la siguiente alta encadena con la huella de la anulación.</li>
+                <li><strong>Condiciones de carrera.</strong> Dos facturas emitidas a la vez leen la misma “última huella” y la cadena se bifurca. Hace falta un bloqueo mientras se lee la última huella y se guarda la nueva.</li>
+                <li><strong>Leer la huella de una caché.</strong> La última huella debe leerse de la base de datos en el momento de generar el registro.</li>
+            </ul>
+
+            <div class="callout">
+                <span class="callout-title">Diagnóstico rápido</span>
+                <p>Imprime la cadena exacta antes de aplicar SHA-256, entre comillas para ver los espacios, y compárala carácter a carácter con la que genera el <a href="../">validador</a> para los mismos datos. La primera diferencia te dice cuál de estos errores tienes.</p>
+            </div>
+
+            <section class="cta">
+                <h2>Compara tu cadena con la correcta</h2>
+                <p>El validador te muestra la cadena canónica, la huella y la URL del QR de cualquier registro, y avisa de los errores de formato (importes, fechas, marca temporal, NIF). Funciona en tu navegador.</p>
+                <p><a class="btn" href="../">Abrir el validador</a></p>
+            </section>
+
+            <section class="related">
+                <h2>Guías relacionadas</h2>
+                <div class="card-grid">
+                    <a class="card" href="huella-verifactu-sha256.html"><strong>Cómo se calcula la huella SHA-256</strong><span>Los 8 campos, el formato, los ejemplos de la AEAT y código en 3 lenguajes.</span></a>
+                    <a class="card" href="verifactu-woocommerce.html"><strong>VeriFactu en WooCommerce</strong><span>Qué necesita tu tienda y qué cubre (y qué no) un plugin.</span></a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <p>Herramienta independiente. No está afiliada a la Agencia Tributaria (AEAT) ni avalada por ella. Consulta siempre la normativa y la documentación técnica de la AEAT.</p>
+        <p><a href="../">Validador VeriFactu</a> · <a href="./">Guías</a> · <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin para WooCommerce</a></p>
+    </footer>
+    <script data-goatcounter="https://gwii-verifactu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cómo se calcula la huella SHA-256 de VeriFactu, paso a paso</title>
+    <meta name="description" content="Cálculo de la huella (hash) SHA-256 encadenada de VeriFactu: los 8 campos, el orden, el formato de cada valor y los ejemplos de la AEAT con su resultado. Con código en JavaScript, PHP y Python.">
+    <link rel="canonical" href="https://gwi1i.github.io/verifactu/guias/huella-verifactu-sha256.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Cómo se calcula la huella SHA-256 de VeriFactu, paso a paso">
+    <meta property="og:description" content="Los 8 campos, el orden, el formato y los ejemplos de la AEAT con su resultado.">
+    <meta property="og:url" content="https://gwi1i.github.io/verifactu/guias/huella-verifactu-sha256.html">
+    <meta property="og:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "Cómo se calcula la huella SHA-256 de VeriFactu, paso a paso",
+          "description": "Los 8 campos de la huella de un registro de alta, el orden, el formato de cada valor, el encadenamiento y los ejemplos de la AEAT.",
+          "inLanguage": "es",
+          "datePublished": "2026-09-29",
+          "dateModified": "2026-09-29",
+          "author": { "@type": "Person", "name": "gwii", "url": "https://profiles.wordpress.org/gwii/" },
+          "mainEntityOfPage": "https://gwi1i.github.io/verifactu/guias/huella-verifactu-sha256.html"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Validador VeriFactu", "item": "https://gwi1i.github.io/verifactu/" },
+            { "@type": "ListItem", "position": 2, "name": "Guías", "item": "https://gwi1i.github.io/verifactu/guias/" },
+            { "@type": "ListItem", "position": 3, "name": "Huella SHA-256", "item": "https://gwi1i.github.io/verifactu/guias/huella-verifactu-sha256.html" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Qué campos forman la huella de un registro de alta de VeriFactu?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Ocho campos en este orden: IDEmisorFactura, NumSerieFactura, FechaExpedicionFactura, TipoFactura, CuotaTotal, ImporteTotal, Huella (la del registro anterior) y FechaHoraHusoGenRegistro. Se unen como nombre=valor separados por &, se codifican en UTF-8 y se aplica SHA-256. El resultado se expresa en hexadecimal en mayúsculas." }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Qué se pone en Huella en el primer registro?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Nada: el campo se incluye vacío (Huella=&) porque no hay registro anterior en la cadena." }
+            },
+            {
+              "@type": "Question",
+              "name": "¿La huella de VeriFactu va en el código QR?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. El QR solo lleva la URL de cotejo con nif, numserie, fecha e importe. La huella va en el registro de facturación." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="guia.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="brand" href="../"><span class="brand-icon">✓</span>Validador VeriFactu</a>
+            <nav class="site-nav" aria-label="Principal">
+                <a href="../">Validador</a>
+                <a href="./">Guías</a>
+                <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <nav class="breadcrumb" aria-label="Ruta"><a href="../">Validador</a> › <a href="./">Guías</a> › Huella SHA-256</nav>
+
+        <article>
+            <h1>Cómo se calcula la huella SHA-256 de VeriFactu, paso a paso</h1>
+            <p class="lede">La huella es un resumen SHA-256 de ocho datos del registro de facturación, que incluye la huella del registro anterior. Así cada registro queda encadenado al anterior y cualquier cambio posterior se detecta.</p>
+            <p class="meta">Actualizada el 29 de septiembre de 2026 · Basada en el documento técnico de la AEAT sobre la huella (v0.1.2) y la Orden HAC/1177/2024.</p>
+
+            <div class="toc">
+                <strong>En esta guía</strong>
+                <ol>
+                    <li><a href="#campos">Los 8 campos y su orden</a></li>
+                    <li><a href="#formato">El formato exacto de cada valor</a></li>
+                    <li><a href="#pasos">El cálculo en 4 pasos</a></li>
+                    <li><a href="#ejemplos">Los ejemplos de la AEAT, con su resultado</a></li>
+                    <li><a href="#anulacion">La huella de un registro de anulación</a></li>
+                    <li><a href="#codigo">Código en JavaScript, PHP y Python</a></li>
+                </ol>
+            </div>
+
+            <h2 id="campos">1. Los 8 campos y su orden</h2>
+            <p>Para un <strong>registro de alta</strong> (la factura que se emite), la huella se calcula con estos campos, siempre en este orden y con estos nombres:</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>Campo</th><th>Qué es</th><th>Ejemplo</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td><code>IDEmisorFactura</code></td><td>NIF del emisor</td><td><code>89890001K</code></td></tr>
+                        <tr><td>2</td><td><code>NumSerieFactura</code></td><td>Serie y número de la factura</td><td><code>12345678/G33</code></td></tr>
+                        <tr><td>3</td><td><code>FechaExpedicionFactura</code></td><td>Fecha de expedición</td><td><code>01-01-2024</code></td></tr>
+                        <tr><td>4</td><td><code>TipoFactura</code></td><td>F1, F2, F3, R1…R5</td><td><code>F1</code></td></tr>
+                        <tr><td>5</td><td><code>CuotaTotal</code></td><td>Suma de las cuotas de IVA</td><td><code>12.35</code></td></tr>
+                        <tr><td>6</td><td><code>ImporteTotal</code></td><td>Importe total de la factura</td><td><code>123.45</code></td></tr>
+                        <tr><td>7</td><td><code>Huella</code></td><td>Huella del registro anterior</td><td>vacío en el primero</td></tr>
+                        <tr><td>8</td><td><code>FechaHoraHusoGenRegistro</code></td><td>Momento en que se genera el registro, con huso horario</td><td><code>2024-01-01T19:20:30+01:00</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 id="formato">2. El formato exacto de cada valor</h2>
+            <p>La huella no se calcula sobre los datos, sino sobre <strong>el texto</strong>. Un solo carácter distinto produce una huella completamente diferente. Por eso:</p>
+            <ul>
+                <li><strong>Mismo texto que en el XML.</strong> Cada valor debe ser idéntico al que va en el registro que se envía o se conserva. Si en el XML pones <code>123.40</code>, en la huella también.</li>
+                <li><strong>Importes con punto decimal.</strong> <code>123.45</code>, no <code>123,45</code>. Lo más seguro es usar siempre dos decimales: <code>123.4</code> y <code>123.40</code> dan huellas distintas.</li>
+                <li><strong>Fecha de expedición como DD-MM-AAAA</strong>: <code>01-01-2024</code>, no <code>2024-01-01</code>.</li>
+                <li><strong>Marca temporal en ISO 8601 con huso</strong>: <code>2024-01-01T19:20:30+01:00</code>. El huso es parte del texto: la misma hora escrita en UTC (<code>18:20:30+00:00</code>) da otra huella.</li>
+                <li><strong>Sin espacios al principio ni al final</strong> de cada valor. Los espacios intermedios sí cuentan.</li>
+                <li><strong>El campo <code>Huella</code> se incluye siempre</strong>, aunque esté vacío en el primer registro de la cadena.</li>
+            </ul>
+
+            <h2 id="pasos">3. El cálculo en 4 pasos</h2>
+            <ol>
+                <li><strong>Construye la cadena</strong> uniendo los 8 campos como <code>nombre=valor</code>, separados por <code>&amp;</code>. No se codifica nada como URL: la barra de <code>12345678/G33</code> se queda como <code>/</code>.</li>
+                <li><strong>Pásala a bytes en UTF-8.</strong> Importa si la serie lleva caracteres como la ñ o acentos.</li>
+                <li><strong>Aplica SHA-256</strong> a esos bytes.</li>
+                <li><strong>Escribe el resultado en hexadecimal en mayúsculas</strong>: 64 caracteres del 0 al 9 y de la A a la F.</li>
+            </ol>
+            <p>La huella resultante es la que irá en el campo <code>Huella</code> del <em>siguiente</em> registro. Así se forma la cadena.</p>
+
+            <div class="callout">
+                <span class="callout-title">¿Qué es “el registro anterior”?</span>
+                <p>Es el último registro de facturación generado por el mismo sistema para ese emisor, sea de alta o de anulación. No es “la factura anterior de la misma serie”: si anulas una factura, la siguiente alta encadena con la anulación.</p>
+            </div>
+
+            <h2 id="ejemplos">4. Los ejemplos de la AEAT, con su resultado</h2>
+            <p>Estos son los casos del documento técnico de la AEAT. Si tu implementación no da exactamente estas huellas, hay un error de formato.</p>
+
+            <h3>Caso 1: primer registro de alta (sin huella anterior)</h3>
+            <pre><code>IDEmisorFactura=89890001K&amp;NumSerieFactura=12345678/G33&amp;FechaExpedicionFactura=01-01-2024&amp;TipoFactura=F1&amp;CuotaTotal=12.35&amp;ImporteTotal=123.45&amp;Huella=&amp;FechaHoraHusoGenRegistro=2024-01-01T19:20:30+01:00</code></pre>
+            <p>Huella: <code>3C464DAF61ACB827C65FDA19F352A4E3BDC2C640E9E9FC4CC058073F38F12F60</code></p>
+
+            <h3>Caso 2: segundo registro de alta, encadenado con el primero</h3>
+            <pre><code>IDEmisorFactura=89890001K&amp;NumSerieFactura=12345679/G34&amp;FechaExpedicionFactura=01-01-2024&amp;TipoFactura=F1&amp;CuotaTotal=12.35&amp;ImporteTotal=123.45&amp;Huella=3C464DAF61ACB827C65FDA19F352A4E3BDC2C640E9E9FC4CC058073F38F12F60&amp;FechaHoraHusoGenRegistro=2024-01-01T19:20:35+01:00</code></pre>
+            <p>Huella: <code>F7B94CFD8924EDFF273501B01EE5153E4CE8F259766F88CF6ACB8935802A2B97</code></p>
+
+            <p>Puedes comprobar ambos casos, y los tuyos, en el <a href="../">validador</a>: calcula la huella en tu navegador y no envía los datos a ningún servidor.</p>
+
+            <h2 id="anulacion">5. La huella de un registro de anulación</h2>
+            <p>Cuando se anula una factura ya registrada, el registro de anulación tiene su propia huella, con <strong>cinco campos</strong>:</p>
+            <ol>
+                <li><code>IDEmisorFacturaAnulada</code></li>
+                <li><code>NumSerieFacturaAnulada</code></li>
+                <li><code>FechaExpedicionFacturaAnulada</code></li>
+                <li><code>Huella</code> (la del registro anterior de la cadena)</li>
+                <li><code>FechaHoraHusoGenRegistro</code></li>
+            </ol>
+            <h3>Caso 3: anulación de la factura del caso 2</h3>
+            <pre><code>IDEmisorFacturaAnulada=89890001K&amp;NumSerieFacturaAnulada=12345679/G34&amp;FechaExpedicionFacturaAnulada=01-01-2024&amp;Huella=F7B94CFD8924EDFF273501B01EE5153E4CE8F259766F88CF6ACB8935802A2B97&amp;FechaHoraHusoGenRegistro=2024-01-01T19:20:40+01:00</code></pre>
+            <p>Huella: <code>177547C0D57AC74748561D054A9CEC14B4C4EA23D1BEFD6F2E69E3A388F90C68</code></p>
+
+            <h2 id="codigo">6. Código en JavaScript, PHP y Python</h2>
+            <h3>JavaScript (navegador o Node.js 18+)</h3>
+            <pre><code>async function huellaAlta(c) {
+  const cadena =
+    `IDEmisorFactura=${c.nif.trim()}` +
+    `&amp;NumSerieFactura=${c.numSerie.trim()}` +
+    `&amp;FechaExpedicionFactura=${c.fecha.trim()}` +
+    `&amp;TipoFactura=${c.tipo.trim()}` +
+    `&amp;CuotaTotal=${c.cuota.trim()}` +
+    `&amp;ImporteTotal=${c.importe.trim()}` +
+    `&amp;Huella=${(c.huellaAnterior || '').trim()}` +
+    `&amp;FechaHoraHusoGenRegistro=${c.fechaHora.trim()}`;
+  const bytes = new TextEncoder().encode(cadena);          // UTF-8
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return [...new Uint8Array(digest)]
+    .map(b =&gt; b.toString(16).padStart(2, '0')).join('').toUpperCase();
+}</code></pre>
+
+            <h3>PHP</h3>
+            <pre><code>function huella_alta(array $c): string {
+    $cadena = 'IDEmisorFactura=' . trim($c['nif'])
+        . '&amp;NumSerieFactura=' . trim($c['num_serie'])
+        . '&amp;FechaExpedicionFactura=' . trim($c['fecha'])
+        . '&amp;TipoFactura=' . trim($c['tipo'])
+        . '&amp;CuotaTotal=' . trim($c['cuota'])
+        . '&amp;ImporteTotal=' . trim($c['importe'])
+        . '&amp;Huella=' . trim($c['huella_anterior'] ?? '')
+        . '&amp;FechaHoraHusoGenRegistro=' . trim($c['fecha_hora']);
+    return strtoupper(hash('sha256', $cadena)); // el texto PHP ya es UTF-8
+}</code></pre>
+
+            <h3>Python</h3>
+            <pre><code>import hashlib
+
+def huella_alta(c: dict) -&gt; str:
+    cadena = (
+        f"IDEmisorFactura={c['nif'].strip()}"
+        f"&amp;NumSerieFactura={c['num_serie'].strip()}"
+        f"&amp;FechaExpedicionFactura={c['fecha'].strip()}"
+        f"&amp;TipoFactura={c['tipo'].strip()}"
+        f"&amp;CuotaTotal={c['cuota'].strip()}"
+        f"&amp;ImporteTotal={c['importe'].strip()}"
+        f"&amp;Huella={c.get('huella_anterior', '').strip()}"
+        f"&amp;FechaHoraHusoGenRegistro={c['fecha_hora'].strip()}"
+    )
+    return hashlib.sha256(cadena.encode("utf-8")).hexdigest().upper()</code></pre>
+            <p>Con los datos del caso 1, las tres funciones devuelven <code>3C464DAF…F12F60</code>. Si tu resultado no coincide, revisa <a href="huella-verifactu-no-coincide.html">los errores más habituales</a>.</p>
+
+            <div class="callout warn">
+                <span class="callout-title">La huella es solo una parte</span>
+                <p>Calcular bien la huella no basta para cumplir VeriFactu. El sistema también debe generar el registro de facturación en el formato XML de la AEAT, enviarlo a la AEAT (modalidad VERI*FACTU) o firmarlo y llevar un registro de eventos (modalidad no VERI*FACTU), incluir el <a href="codigo-qr-verifactu.html">código QR</a> en la factura y contar con la declaración responsable del fabricante del software.</p>
+            </div>
+
+            <section class="cta">
+                <h2>Comprueba tu huella en segundos</h2>
+                <p>El validador calcula la huella y la URL del QR de cualquier registro, marca los errores de formato y trae cargados los ejemplos de la AEAT. Funciona en tu navegador: los datos no salen de tu equipo.</p>
+                <p><a class="btn" href="../">Abrir el validador</a><a class="btn secondary" href="verifactu-woocommerce.html">¿Tienes WooCommerce?</a></p>
+            </section>
+
+            <section class="related">
+                <h2>Guías relacionadas</h2>
+                <div class="card-grid">
+                    <a class="card" href="huella-verifactu-no-coincide.html"><strong>La huella no coincide: errores típicos</strong><span>Importes, fechas, husos y espacios: qué revisar cuando tu huella no da la esperada.</span></a>
+                    <a class="card" href="codigo-qr-verifactu.html"><strong>Código QR de VeriFactu</strong><span>URL de cotejo, parámetros, tamaño y texto obligatorio.</span></a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <p>Herramienta independiente. No está afiliada a la Agencia Tributaria (AEAT) ni avalada por ella. Consulta siempre la normativa y la documentación técnica de la AEAT.</p>
+        <p><a href="../">Validador VeriFactu</a> · <a href="./">Guías</a> · <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin para WooCommerce</a></p>
+    </footer>
+    <script data-goatcounter="https://gwii-verifactu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -21,6 +21,7 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
 | Ruta | Contenido |
 | --- | --- |
 | `index.html`, `robots.txt`, `sitemap.xml`, `vercel.json`, `gumroad_cover.jpg` | Sitio publicado (raíz del repo = GitHub Pages) |
+| `guias/` | 5 guías SEO (huella, QR, errores de huella, WooCommerce, plazos 2027) + índice y `guia.css`. Los ejemplos de huella salen del propio plugin; al tocar datos normativos, contrastar con la AEAT/BOE. Añadir cada guía nueva a `sitemap.xml` y al bloque "Guías detalladas" de `index.html` |
 | `gwii-invoice-hash-for-woocommerce/` | Código fuente del plugin (php, readme.txt, LICENSE, INSTRUCCIONES_Y_SOPORTE.txt) |
 | `gwii-invoice-hash-for-woocommerce.zip` | Plugin empaquetado que descarga la landing y que está en Gumroad |
 | `tests/test_plugin.php` | 131 pruebas del plugin con stubs de WordPress/WooCommerce (`php tests/test_plugin.php`) |

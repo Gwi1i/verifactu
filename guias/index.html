@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guías técnicas de VeriFactu: huella, código QR, WooCommerce y plazos</title>
+    <meta name="description" content="Guías prácticas sobre VeriFactu: cómo se calcula la huella SHA-256, qué lleva el código QR, por qué una huella no coincide, cómo cumplir en WooCommerce y los plazos de 2027.">
+    <link rel="canonical" href="https://gwi1i.github.io/verifactu/guias/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Guías técnicas de VeriFactu">
+    <meta property="og:description" content="Huella SHA-256, código QR, errores típicos, WooCommerce y plazos 2027.">
+    <meta property="og:url" content="https://gwi1i.github.io/verifactu/guias/">
+    <meta property="og:image" content="https://gwi1i.github.io/verifactu/gumroad_cover.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "name": "Guías técnicas de VeriFactu",
+          "url": "https://gwi1i.github.io/verifactu/guias/",
+          "inLanguage": "es",
+          "hasPart": [
+            { "@type": "TechArticle", "headline": "Cómo se calcula la huella SHA-256 de VeriFactu, paso a paso", "url": "https://gwi1i.github.io/verifactu/guias/huella-verifactu-sha256.html" },
+            { "@type": "TechArticle", "headline": "Código QR de VeriFactu: URL, parámetros, tamaño y texto obligatorio", "url": "https://gwi1i.github.io/verifactu/guias/codigo-qr-verifactu.html" },
+            { "@type": "TechArticle", "headline": "La huella VeriFactu no coincide: 9 errores típicos y cómo detectarlos", "url": "https://gwi1i.github.io/verifactu/guias/huella-verifactu-no-coincide.html" },
+            { "@type": "Article", "headline": "VeriFactu en WooCommerce: qué necesita tu tienda y qué cubre un plugin", "url": "https://gwi1i.github.io/verifactu/guias/verifactu-woocommerce.html" },
+            { "@type": "Article", "headline": "Plazos de VeriFactu 2027: a quién afecta y desde cuándo", "url": "https://gwi1i.github.io/verifactu/guias/plazos-verifactu-2027.html" }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Validador VeriFactu", "item": "https://gwi1i.github.io/verifactu/" },
+            { "@type": "ListItem", "position": 2, "name": "Guías", "item": "https://gwi1i.github.io/verifactu/guias/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="guia.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="brand" href="../"><span class="brand-icon">✓</span>Validador VeriFactu</a>
+            <nav class="site-nav" aria-label="Principal">
+                <a href="../">Validador</a>
+                <a href="./" aria-current="page">Guías</a>
+                <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <nav class="breadcrumb" aria-label="Ruta"><a href="../">Validador</a> › Guías</nav>
+
+        <h1>Guías técnicas de VeriFactu</h1>
+        <p class="lede">Explicaciones prácticas para quien tiene que implementar, revisar o elegir un sistema de facturación adaptado a VeriFactu, con ejemplos que puedes comprobar en el <a href="../">validador</a>.</p>
+        <p class="meta">Actualizadas el 29 de septiembre de 2026.</p>
+
+        <h2>Para desarrolladores</h2>
+        <div class="card-grid">
+            <a class="card" href="huella-verifactu-sha256.html"><strong>Cómo se calcula la huella SHA-256, paso a paso</strong><span>Los 8 campos, el formato exacto, los ejemplos de la AEAT con su resultado y código en JavaScript, PHP y Python.</span></a>
+            <a class="card" href="huella-verifactu-no-coincide.html"><strong>La huella no coincide: 9 errores típicos</strong><span>Importes, fechas, huso horario, espacios, codificación y encadenamiento.</span></a>
+            <a class="card" href="codigo-qr-verifactu.html"><strong>Código QR: URL, parámetros, tamaño y texto</strong><span>La URL de cotejo de la AEAT, los 4 parámetros y cómo imprimirlo.</span></a>
+        </div>
+
+        <h2>Para tiendas online</h2>
+        <div class="card-grid">
+            <a class="card" href="verifactu-woocommerce.html"><strong>VeriFactu en WooCommerce</strong><span>Qué necesita tu tienda, qué opciones hay y qué preguntar antes de elegir un plugin o servicio.</span></a>
+            <a class="card" href="plazos-verifactu-2027.html"><strong>Plazos de VeriFactu 2027</strong><span>1 de enero para sociedades, 1 de julio para el resto. Quién está excluido y qué hacer ahora.</span></a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>Herramienta independiente. No está afiliada a la Agencia Tributaria (AEAT) ni avalada por ella. Consulta siempre la normativa y la documentación técnica de la AEAT.</p>
+        <p><a href="../">Validador VeriFactu</a> · <a href="./">Guías</a> · <a href="https://wordpress.org/plugins/gwii-invoice-hash-for-woocommerce/">Plugin para WooCommerce</a></p>
+    </footer>
+    <script data-goatcounter="https://gwii-verifactu.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
