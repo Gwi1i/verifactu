@@ -1,7 +1,7 @@
 === Gwii Invoice Hash for WooCommerce ===
 Contributors: gwii
 Donate link: https://gwi1i.github.io/verifactu/
-Tags: verifactu, aeat, invoice, hash, woocommerce
+Tags: verifactu, woocommerce, aeat, factura, facturacion
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -9,11 +9,11 @@ Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Computes the SHA-256 chained invoice hash and the AEAT QR verification URL (Spanish VeriFactu format) for each completed WooCommerce order.
+VeriFactu for WooCommerce: SHA-256 chained invoice hash (huella) and AEAT QR URL for each completed order. Independent tool, not affiliated with AEAT.
 
 == Description ==
 
-**Gwii Invoice Hash for WooCommerce** is a small utility for Spanish online shops. When an order is completed it computes, inside your own WordPress server, the SHA-256 chained invoice hash ("huella") and the QR verification URL of the Spanish Tax Agency (AEAT), following the AEAT technical document v0.1.2 and chapter VIII of Orden HAC/1177/2024 (the "VeriFactu" invoicing regulation).
+**VeriFactu hash and QR for WooCommerce.** Gwii Invoice Hash is a small utility for Spanish online shops. When an order is completed it computes, inside your own WordPress server, the SHA-256 chained invoice hash ("huella") and the QR verification URL of the Spanish Tax Agency (AEAT), following the AEAT technical document v0.1.2 and chapter VIII of Orden HAC/1177/2024 (the "VeriFactu" invoicing regulation).
 
 This plugin is developed independently by an individual developer. It is not affiliated with, endorsed by or certified by the Agencia Estatal de Administración Tributaria (AEAT), Automattic or WooCommerce. "VeriFactu" refers to the AEAT regulation the plugin implements; "WooCommerce" refers to the e-commerce plugin it extends.
 

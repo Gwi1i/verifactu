@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://verifactu-linter.vercel.app/sitemap.xml
+Sitemap: https://gwi1i.github.io/verifactu/sitemap.xml
