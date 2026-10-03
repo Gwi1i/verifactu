@@ -22,6 +22,7 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
 | --- | --- |
 | `index.html`, `robots.txt`, `sitemap.xml`, `vercel.json`, `gumroad_cover.jpg` | Sitio publicado (raíz del repo = GitHub Pages) |
 | `guias/` | 5 guías SEO (huella, QR, errores de huella, WooCommerce, plazos 2027) + índice y `guia.css`. Los ejemplos de huella salen del propio plugin; al tocar datos normativos, contrastar con la AEAT/BOE. Añadir cada guía nueva a `sitemap.xml` y al bloque "Guías detalladas" de `index.html` |
+| `marketing/` | Textos publicados fuera del sitio. `devto-huella-verifactu.md`: artículo de dev.to (fuente; lo publicado en dev.to es lo que manda si se edita allí) |
 | `gwii-invoice-hash-for-woocommerce/` | Código fuente del plugin (php, readme.txt, LICENSE, INSTRUCCIONES_Y_SOPORTE.txt) |
 | `gwii-invoice-hash-for-woocommerce.zip` | Plugin empaquetado que descarga la landing y que está en Gumroad |
 | `tests/test_plugin.php` | 131 pruebas del plugin con stubs de WordPress/WooCommerce (`php tests/test_plugin.php`) |
@@ -54,6 +55,12 @@ Herramienta y plugin para el formato VeriFactu (RD 1007/2023, Orden HAC/1177/202
   cuenta la crea el usuario. Readme del plugin reescrito para que empiece por "VeriFactu"
   (buscando "verifactu" en WordPress.org salía el 17º de 19). No cambiar el nombre visible del plugin
   sin decisión del usuario: WordPress.org ya rechazó "VeriFactu Express".
+- **Difusión** (03/10/2026): artículo en dev.to (cuenta del usuario, perfil "A Molina"):
+  https://dev.to/a_molina_b9d7a17c33863229/implementando-la-huella-sha-256-de-verifactu-6-detalles-que-rompen-el-hash-y-uno-que-rompe-la-1d82
+  La declaración de uso de IA en dev.to la elige siempre el usuario. La descripción del repositorio
+  de GitHub ya no dice "oficial". Estado a 03/10: Google solo indexa la portada; las guías están
+  "Rastreadas: actualmente sin indexar" (normal en web nueva sin enlaces); 0 ventas en Gumroad;
+  0 instalaciones activas del plugin; la cuenta de GoatCounter aún no existe.
 
 ## Pendiente
 
