@@ -5,7 +5,7 @@ Tags: verifactu, woocommerce, aeat, factura, facturacion
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,12 +20,12 @@ This plugin is developed independently by an individual developer. It is not aff
 ### What it does
 
 * **SHA-256 chained hash** built from the 8-field canonical string defined in the specification. The calculation matches the three official test vectors published by the AEAT.
-* **Sequential invoice numbering**, independent from the WooCommerce order ID.
+* **One invoice number.** With WooCommerce PDF Invoices & Packing Slips active, the hash and the QR use its invoice number and date. Otherwise the plugin assigns its own sequential numbering, independent from the order ID.
 * **Database lock** (MySQL `GET_LOCK`, or an atomic row lock on SQLite) so that two orders completed at the same time cannot break the chain.
 * **Timestamps in the WordPress time zone** (+01:00 / +02:00 in Spain).
 * **Cancellation record** chained to the previous hash when a registered order is cancelled or fully refunded.
 * **QR verification URL** with the four official parameters: `nif`, `numserie`, `fecha` and `importe`.
-* **HPOS compatible** and integrates with WooCommerce PDF Invoices & Packing Slips (adds text rows with the invoice number, hash and URL).
+* **HPOS compatible** and integrates with WooCommerce PDF Invoices & Packing Slips (adds text rows with the hash and the verification URL).
 * **No external services:** no API keys, no data sent to third parties.
 
 ### What it does NOT do
@@ -60,12 +60,16 @@ When the order changes to the Completed status. The invoice date and the timesta
 A chained cancellation record is generated and stored in the order. Partial refunds do not generate any record.
 
 = Is it compatible with PDF invoice plugins? =
-Yes. The data is stored as order meta (`_verifactu_num_serie`, `_verifactu_hash`, `_verifactu_qr_url`, among others) and is automatically added as text rows in WooCommerce PDF Invoices & Packing Slips.
+Yes. With WooCommerce PDF Invoices & Packing Slips active, the plugin uses that plugin's invoice number and date (creating the invoice when the order is completed if it does not exist yet), so the PDF shows a single invoice number and the hash and QR refer to it. The hash and the verification URL are added as text rows to the PDF. You can switch back to the plugin's own numbering in the settings. The data is also stored as order meta (`_verifactu_num_serie`, `_verifactu_hash`, `_verifactu_qr_url`, among others).
 
 = I was using version 1.0.x under the previous name. Will my chain continue? =
 Yes. On activation the plugin copies the settings and the last hash saved by version 1.0.x, so the chain continues without gaps.
 
 == Changelog ==
+
+= 1.2.0 =
+* With WooCommerce PDF Invoices & Packing Slips active, the hash and the QR now use its invoice number and date, so the PDF no longer shows two different invoice numbers. New setting "Numeración de facturas" to keep the plugin's own numbering instead.
+* If that plugin cannot provide an invoice number, no hash is generated and an order note explains why.
 
 = 1.1.2 =
 * The settings page warns when the WordPress time zone is not a Spanish one (Madrid, Canary Islands or Ceuta), since the invoice date and the record timestamp are taken in that zone. Fixed offsets such as UTC+1 also trigger the warning because they ignore daylight saving time.

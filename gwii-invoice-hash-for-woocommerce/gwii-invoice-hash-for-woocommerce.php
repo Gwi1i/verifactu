@@ -3,7 +3,7 @@
  * Plugin Name: Gwii Invoice Hash for WooCommerce
  * Plugin URI: https://gwi1i.github.io/verifactu/
  * Description: Computes the SHA-256 chained invoice hash and the AEAT QR verification URL (Spanish VeriFactu format, Orden HAC/1177/2024) for each completed WooCommerce order. Calculation utility only: it does not submit records to the AEAT. Not affiliated with AEAT or WooCommerce.
- * Version: 1.1.2
+ * Version: 1.2.0
  * Author: gwii
  * Author URI: https://profiles.wordpress.org/gwii/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ if (!defined('ABSPATH')) {
  */
 class Gwii_Invoice_Hash {
 
-    const VERSION = '1.1.2';
+    const VERSION = '1.2.0';
 
     /** URL de cotejo del código QR fijada en la Orden HAC/1177/2024 (entorno de producción). */
     const QR_BASE_URL = 'https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR';
@@ -135,6 +135,56 @@ class Gwii_Invoice_Hash {
             'sanitize_callback' => array($this, 'sanitize_tipo_option'),
             'default'           => 'F1',
         ));
+
+        register_setting('gwiih_options_group', 'gwiih_numeracion', array(
+            'type'              => 'string',
+            'sanitize_callback' => array($this, 'sanitize_numeracion_option'),
+            'default'           => 'auto',
+        ));
+    }
+
+    public function sanitize_numeracion_option($value) {
+        return in_array($value, array('auto', 'propia'), true) ? $value : 'auto';
+    }
+
+    /**
+     * ¿Está activo WooCommerce PDF Invoices & Packing Slips?
+     */
+    public static function wcpdf_disponible() {
+        return function_exists('wcpdf_get_invoice');
+    }
+
+    /**
+     * Con PDF Invoices activo (y salvo que se elija numeración propia) el número y la fecha de la
+     * factura salen de ese plugin, para que el PDF no muestre dos números de factura distintos.
+     */
+    private function usa_numeracion_wcpdf() {
+        return get_option('gwiih_numeracion', 'auto') !== 'propia' && self::wcpdf_disponible();
+    }
+
+    /**
+     * Número y fecha de expedición de la factura de PDF Invoices. La crea si aún no existe.
+     *
+     * @return array|null array(numero, fecha DD-MM-AAAA) o null si no se pudo obtener.
+     */
+    private function numero_factura_wcpdf($order) {
+        try {
+            $invoice = wcpdf_get_invoice($order, true);
+            if (!$invoice) {
+                return null;
+            }
+            $number = $invoice->get_number();
+            $num    = $number ? trim((string) $number->get_formatted()) : '';
+            // NumSerieFactura admite como máximo 60 caracteres.
+            if ($num === '' || mb_strlen($num) > 60) {
+                return null;
+            }
+            $date  = $invoice->get_date();
+            $fecha = $date ? $date->date_i18n('d-m-Y') : $this->now()->format('d-m-Y');
+            return array($num, $fecha);
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     /**
@@ -246,6 +296,25 @@ class Gwii_Invoice_Hash {
                         <td>
                             <input type="text" name="gwiih_nif_emisor" value="<?php echo esc_attr(get_option('gwiih_nif_emisor')); ?>" class="regular-text" placeholder="B12345674" maxlength="9" required />
                             <p class="description"><?php esc_html_e('NIF de la empresa o autónomo titular de la tienda. Se comprueba el dígito de control al guardar.', 'gwii-invoice-hash-for-woocommerce'); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr valign="top">
+                        <th scope="row"><?php esc_html_e('Numeración de facturas', 'gwii-invoice-hash-for-woocommerce'); ?></th>
+                        <td>
+                            <select name="gwiih_numeracion">
+                                <option value="auto" <?php selected(get_option('gwiih_numeracion', 'auto'), 'auto'); ?>><?php esc_html_e('Usar la de PDF Invoices & Packing Slips si está activo', 'gwii-invoice-hash-for-woocommerce'); ?></option>
+                                <option value="propia" <?php selected(get_option('gwiih_numeracion', 'auto'), 'propia'); ?>><?php esc_html_e('Numeración propia de este plugin', 'gwii-invoice-hash-for-woocommerce'); ?></option>
+                            </select>
+                            <p class="description">
+                                <?php
+                                if (self::wcpdf_disponible()) {
+                                    esc_html_e('PDF Invoices & Packing Slips está activo. Con la primera opción, la huella y el QR usan el número y la fecha de su factura, y el PDF muestra un único número. Configura el prefijo y el formato en los ajustes de ese plugin.', 'gwii-invoice-hash-for-woocommerce');
+                                } else {
+                                    esc_html_e('PDF Invoices & Packing Slips no está activo, así que se usa la numeración propia (prefijo de abajo).', 'gwii-invoice-hash-for-woocommerce');
+                                }
+                                ?>
+                            </p>
                         </td>
                     </tr>
 
@@ -520,17 +589,31 @@ class Gwii_Invoice_Hash {
                 return;
             }
 
-            $prefijo = get_option('gwiih_serie_prefijo', 'F2026-');
-            $tipo    = get_option('gwiih_modo_registro', 'F1');
-            $numero  = (int) get_option('gwiih_next_number', 1);
-            if ($numero < 1) {
-                $numero = 1;
-            }
-            $num_serie = $prefijo . str_pad((string) $numero, 6, '0', STR_PAD_LEFT);
+            $tipo  = get_option('gwiih_modo_registro', 'F1');
+            $ahora = $this->now();
 
-            // La factura se expide en el momento en que se genera el registro.
-            $ahora      = $this->now();
-            $fecha_exp  = $ahora->format('d-m-Y');
+            if ($this->usa_numeracion_wcpdf()) {
+                // Número y fecha de la factura de PDF Invoices: un único número en el PDF.
+                $factura = $this->numero_factura_wcpdf($order);
+                if (!$factura) {
+                    $order->add_order_note(__('VeriFactu: no se pudo obtener el número de factura de PDF Invoices & Packing Slips, así que no se ha generado la huella. Revisa la numeración de facturas de ese plugin y vuelve a completar el pedido.', 'gwii-invoice-hash-for-woocommerce'));
+                    return;
+                }
+                list($num_serie, $fecha_exp) = $factura;
+                $numeracion = 'wcpdf';
+                $numero     = null;
+            } else {
+                $prefijo = get_option('gwiih_serie_prefijo', 'F2026-');
+                $numero  = (int) get_option('gwiih_next_number', 1);
+                if ($numero < 1) {
+                    $numero = 1;
+                }
+                $num_serie = $prefijo . str_pad((string) $numero, 6, '0', STR_PAD_LEFT);
+                // La factura se expide en el momento en que se genera el registro.
+                $fecha_exp  = $ahora->format('d-m-Y');
+                $numeracion = 'propia';
+            }
+
             $ts_iso     = $ahora->format('Y-m-d\TH:i:sP');
             $importe    = self::format_importe($order->get_total());
             $cuota      = self::format_importe($order->get_total_tax());
@@ -551,6 +634,7 @@ class Gwii_Invoice_Hash {
             $qr_url = self::generate_qr_url($nif_emisor, $num_serie, $fecha_exp, $importe);
 
             $order->update_meta_data('_verifactu_num_serie', $num_serie);
+            $order->update_meta_data('_verifactu_numeracion', $numeracion);
             $order->update_meta_data('_verifactu_tipo', $tipo);
             $order->update_meta_data('_verifactu_fecha_expedicion', $fecha_exp);
             $order->update_meta_data('_verifactu_fecha_hora_gen', $ts_iso);
@@ -563,7 +647,9 @@ class Gwii_Invoice_Hash {
             $order->save();
 
             update_option('gwiih_last_hash', $result['hash'], false);
-            update_option('gwiih_next_number', $numero + 1, false);
+            if ($numero !== null) {
+                update_option('gwiih_next_number', $numero + 1, false);
+            }
 
             $order->add_order_note(sprintf(
                 /* translators: 1: número de factura, 2: huella */
@@ -732,10 +818,13 @@ class Gwii_Invoice_Hash {
             return;
         }
 
-        echo '<tr class="verifactu-num-row">';
-        echo '<th style="font-size: 8pt; color: #475569; text-align: left; padding: 4px 0;">' . esc_html__('Factura VeriFactu:', 'gwii-invoice-hash-for-woocommerce') . '</th>';
-        echo '<td style="font-size: 8pt; color: #0f172a; padding: 4px 0;">' . esc_html($num) . '</td>';
-        echo '</tr>';
+        // Con la numeración de PDF Invoices el número ya figura en la factura: no se repite.
+        if ($order->get_meta('_verifactu_numeracion') !== 'wcpdf') {
+            echo '<tr class="verifactu-num-row">';
+            echo '<th style="font-size: 8pt; color: #475569; text-align: left; padding: 4px 0;">' . esc_html__('Factura VeriFactu:', 'gwii-invoice-hash-for-woocommerce') . '</th>';
+            echo '<td style="font-size: 8pt; color: #0f172a; padding: 4px 0;">' . esc_html($num) . '</td>';
+            echo '</tr>';
+        }
         echo '<tr class="verifactu-hash-row">';
         echo '<th style="font-size: 8pt; color: #475569; text-align: left; padding: 4px 0;">' . esc_html__('Huella SHA-256:', 'gwii-invoice-hash-for-woocommerce') . '</th>';
         echo '<td style="font-family: monospace; font-size: 7.5pt; color: #0f172a; word-break: break-all; padding: 4px 0;">' . esc_html($hash) . '</td>';

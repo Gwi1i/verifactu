@@ -54,6 +54,8 @@ function wp_timezone_string() { return $GLOBALS['wp_timezone']; }
 function wc_get_page_screen_id($t) { return 'woocommerce_page_wc-orders'; }
 function wc_get_order($id) { return isset($GLOBALS['wc_orders'][$id]) ? $GLOBALS['wc_orders'][$id] : false; }
 if (!function_exists('mb_substr')) { function mb_substr($s, $a, $b = null) { return $b === null ? substr($s, $a) : substr($s, $a, $b); } }
+// WordPress define mb_strlen en wp-includes/compat.php si falta la extensión mbstring.
+if (!function_exists('mb_strlen')) { function mb_strlen($s) { return preg_match_all('/./us', (string) $s); } }
 
 class WC_Order {
     public $id; private $meta = array(); public $notes = array(); private $total; private $tax; public $saves = 0;
@@ -357,6 +359,80 @@ ok($wpdb->row_lock !== null, 'bloqueo ocupado: no borra el bloqueo ajeno');
 ok(count($o602->notes) === 1 && strpos($o602->notes[0], 'bloqueo') !== false, 'bloqueo ocupado: nota explicativa');
 $wpdb->row_lock = null;
 $wpdb->lock_result = '1';
+
+/* ------------------------------------------------------------------ */
+
+section('Numeración de PDF Invoices & Packing Slips');
+ok(!Gwii_Invoice_Hash::wcpdf_disponible(), 'sin PDF Invoices: no se detecta');
+// Simulación de PDF Invoices: wcpdf_get_invoice() devuelve una factura con número y fecha.
+eval('
+class FakeWcpdfDate { private $d; public function __construct($d) { $this->d = $d; } public function date_i18n($f) { return $this->d->format($f); } }
+class FakeWcpdfNumber { private $n; public function __construct($n) { $this->n = $n; } public function get_formatted() { return $this->n; } }
+class FakeWcpdfInvoice {
+    public function get_number() { return $GLOBALS["wcpdf_number"] === null ? null : new FakeWcpdfNumber($GLOBALS["wcpdf_number"]); }
+    public function get_date() { return new FakeWcpdfDate(new DateTimeImmutable($GLOBALS["wcpdf_date"], new DateTimeZone("Europe/Madrid"))); }
+}
+function wcpdf_get_invoice($order, $init = false) { $GLOBALS["wcpdf_calls"][] = array($order->get_id(), $init); return new FakeWcpdfInvoice(); }
+');
+ok(Gwii_Invoice_Hash::wcpdf_disponible(), 'con PDF Invoices: se detecta');
+
+$GLOBALS['wp_now'] = '2027-01-16 09:00:00';
+$GLOBALS['wcpdf_number'] = 'FAC-2027-0042'; $GLOBALS['wcpdf_date'] = '2027-01-15 18:30:00'; $GLOBALS['wcpdf_calls'] = array();
+$siguiente = get_option('gwiih_next_number');
+$prev = get_option('gwiih_last_hash');
+$GLOBALS['wc_orders'][700] = new WC_Order(700, '24.20', '4.20');
+$plugin->process_order_alta(700);
+$o7 = $GLOBALS['wc_orders'][700];
+eq($o7->get_meta('_verifactu_num_serie'), 'FAC-2027-0042', 'auto + PDF Invoices: usa el número de su factura');
+eq($o7->get_meta('_verifactu_fecha_expedicion'), '15-01-2027', 'auto + PDF Invoices: usa la fecha de su factura');
+eq($o7->get_meta('_verifactu_fecha_hora_gen'), '2027-01-16T09:00:00+01:00', 'la marca temporal sigue siendo la del registro');
+eq($o7->get_meta('_verifactu_numeracion'), 'wcpdf', 'se guarda el origen de la numeración');
+eq($GLOBALS['wcpdf_calls'], array(array(700, true)), 'pide (o crea) la factura de PDF Invoices una vez');
+eq(get_option('gwiih_next_number'), $siguiente, 'no consume la numeración propia');
+eq($o7->get_meta('_verifactu_hash_anterior'), $prev, 'sigue encadenando con la última huella');
+$esperado7 = Gwii_Invoice_Hash::compute_hash_alta(array('IDEmisorFactura' => 'B12345674', 'NumSerieFactura' => 'FAC-2027-0042', 'FechaExpedicionFactura' => '15-01-2027',
+    'TipoFactura' => 'F1', 'CuotaTotal' => '4.20', 'ImporteTotal' => '24.20', 'Huella' => $prev, 'FechaHoraHusoGenRegistro' => '2027-01-16T09:00:00+01:00'));
+eq($o7->get_meta('_verifactu_hash'), $esperado7['hash'], 'huella calculada con el número y la fecha de PDF Invoices');
+ok(strpos($o7->get_meta('_verifactu_qr_url'), 'numserie=FAC-2027-0042&fecha=15-01-2027') !== false, 'el QR usa el mismo número y fecha que el PDF');
+
+ob_start(); $plugin->inject_pdf_invoice_metadata('invoice', $o7); $html = ob_get_clean();
+ok(strpos($html, 'Factura VeriFactu') === false, 'PDF: no repite un segundo número de factura');
+ok(strpos($html, $esperado7['hash']) !== false && strpos($html, 'TIKE-CONT/ValidarQR') !== false, 'PDF: mantiene huella y URL de cotejo');
+
+// Sin número en PDF Invoices: no se genera huella ni se toca la cadena.
+$GLOBALS['wcpdf_number'] = null;
+$last = get_option('gwiih_last_hash');
+$GLOBALS['wc_orders'][701] = new WC_Order(701, '10', '1.74');
+$plugin->process_order_alta(701);
+$o701 = $GLOBALS['wc_orders'][701];
+eq($o701->get_meta('_verifactu_hash'), '', 'sin número de PDF Invoices: no se genera huella');
+eq(get_option('gwiih_last_hash'), $last, 'sin número de PDF Invoices: la cadena no cambia');
+ok(count($o701->notes) === 1 && strpos($o701->notes[0], 'PDF Invoices') !== false, 'sin número de PDF Invoices: nota explicativa');
+eq($wpdb->row_lock, null, 'sin número de PDF Invoices: libera el bloqueo');
+
+// Número de más de 60 caracteres: no cabe en NumSerieFactura.
+$GLOBALS['wcpdf_number'] = str_repeat('X', 61);
+$GLOBALS['wc_orders'][702] = new WC_Order(702, '10', '1.74');
+$plugin->process_order_alta(702);
+eq($GLOBALS['wc_orders'][702]->get_meta('_verifactu_hash'), '', 'número de más de 60 caracteres: no se genera huella');
+
+// Numeración propia elegida a mano: ignora PDF Invoices.
+$GLOBALS['wp_options']['gwiih_numeracion'] = 'propia';
+$GLOBALS['wcpdf_number'] = 'FAC-2027-0043'; $GLOBALS['wcpdf_calls'] = array();
+$GLOBALS['wc_orders'][703] = new WC_Order(703, '10', '1.74');
+$plugin->process_order_alta(703);
+$o703 = $GLOBALS['wc_orders'][703];
+eq($o703->get_meta('_verifactu_num_serie'), 'F2026-' . str_pad((string) $siguiente, 6, '0', STR_PAD_LEFT), 'numeración propia: usa el prefijo y el contador');
+eq($o703->get_meta('_verifactu_numeracion'), 'propia', 'numeración propia: se guarda el origen');
+eq($GLOBALS['wcpdf_calls'], array(), 'numeración propia: no crea facturas en PDF Invoices');
+ob_start(); $plugin->inject_pdf_invoice_metadata('invoice', $o703); $html = ob_get_clean();
+ok(strpos($html, 'Factura VeriFactu') !== false, 'numeración propia: el PDF sí muestra su número');
+unset($GLOBALS['wp_options']['gwiih_numeracion']);
+
+eq($plugin->sanitize_numeracion_option('propia'), 'propia', 'ajuste de numeración: propia');
+eq($plugin->sanitize_numeracion_option('otra'), 'auto', 'ajuste de numeración: valor desconocido vuelve a auto');
+ob_start(); $plugin->render_settings_page(); $html = ob_get_clean();
+ok(strpos($html, 'name="gwiih_numeracion"') !== false && strpos($html, 'está activo') !== false, 'ajustes: muestra la opción y detecta PDF Invoices');
 
 /* ------------------------------------------------------------------ */
 

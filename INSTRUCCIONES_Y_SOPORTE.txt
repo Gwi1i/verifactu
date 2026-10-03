@@ -11,7 +11,9 @@ qué no hace, cómo instalarlo y cómo resolver las dudas más frecuentes.
 HACE:
 * Calcula la huella SHA-256 encadenada de cada pedido al pasar a 'Completado',
   con la cadena canónica del documento técnico AEAT v0.1.2.
-* Asigna un número de factura correlativo (prefijo + 6 dígitos).
+* Usa el número y la fecha de factura de 'WooCommerce PDF Invoices & Packing
+  Slips' si lo tienes activo. Si no, asigna su propio número correlativo
+  (prefijo + 6 dígitos).
 * Genera la URL del código QR de la AEAT (Orden HAC/1177/2024, cap. VIII):
   https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR?nif=&numserie=&fecha=&importe=
 * Genera un registro de anulación si un pedido registrado se cancela o se
@@ -35,7 +37,8 @@ contribuyentes del Impuesto sobre Sociedades y 1 de julio de 2027 para el resto.
 * WordPress 5.8 o superior.
 * WooCommerce 5.0 o superior. Compatible con HPOS.
 * PHP 7.4 o superior.
-* MySQL o MariaDB (se usa GET_LOCK para proteger el encadenamiento).
+* MySQL o MariaDB (se usa GET_LOCK para proteger el encadenamiento). Con otras
+  bases de datos, como SQLite, se usa un bloqueo alternativo.
 
 --------------------------------------------------------------------------------
 3. INSTALACIÓN
@@ -50,8 +53,11 @@ contribuyentes del Impuesto sobre Sociedades y 1 de julio de 2027 para el resto.
 1. WooCommerce > Huella VeriFactu.
 2. Rellena:
    - NIF del emisor: se comprueba el dígito de control al guardar.
-   - Prefijo de la serie: por ejemplo 'F2026-'. El número correlativo se añade
-     automáticamente (F2026-000001, F2026-000002...).
+   - Numeración de facturas: con 'PDF Invoices & Packing Slips' activo, deja
+     la opción por defecto para que la huella y el QR usen el número de esa
+     factura. Su prefijo y formato se configuran en los ajustes de ese plugin.
+   - Prefijo de la serie: solo con la numeración propia. Por ejemplo 'F2026-';
+     el número correlativo se añade solo (F2026-000001, F2026-000002...).
    - Tipo de factura por defecto: F1 (completa) o F2 (simplificada).
 3. Guardar ajustes.
 
@@ -62,9 +68,15 @@ esa zona horaria.
 --------------------------------------------------------------------------------
 5. INTEGRACIÓN CON FACTURAS EN PDF
 --------------------------------------------------------------------------------
-Si usas 'WooCommerce PDF Invoices & Packing Slips', el plugin añade en la
-factura el número VeriFactu, la huella y la URL de cotejo como texto.
+Si usas 'WooCommerce PDF Invoices & Packing Slips', el plugin toma el número
+y la fecha de su factura (la crea al completar el pedido si aún no existe),
+de modo que el PDF muestra un único número de factura y la huella y el QR se
+refieren a él. En la factura añade la huella y la URL de cotejo como texto.
+Activa en ese plugin la opción de mostrar el número de factura.
 La imagen del QR (30 a 40 mm, nivel M) debes añadirla tú a partir de la URL.
+
+Si ese plugin no puede dar un número de factura, no se genera la huella y el
+pedido tendrá una nota explicándolo.
 
 Metadatos disponibles en cada pedido para otros plugins:
 - _verifactu_num_serie          Número de factura asignado.

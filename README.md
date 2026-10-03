@@ -54,7 +54,7 @@ php tests/test_plugin.php
 En `gwii-invoice-hash-for-woocommerce/` (y empaquetado en `gwii-invoice-hash-for-woocommerce.zip`) hay un plugin GPLv2, desarrollado de forma independiente y sin afiliación con la AEAT ni con WooCommerce, que:
 
 * Calcula la huella SHA-256 encadenada de cada pedido al pasar a **Completado**, con bloqueo en base de datos para que dos pedidos simultáneos no rompan la cadena.
-* Asigna un **número de factura correlativo** independiente del ID del pedido.
+* Usa el **número de factura de PDF Invoices & Packing Slips** si está activo; si no, asigna un **número correlativo propio** independiente del ID del pedido.
 * Usa la **zona horaria de WordPress** para la marca temporal (`+01:00` / `+02:00` en España).
 * Genera un **registro de anulación** encadenado si un pedido registrado se cancela o se reembolsa por completo.
 * Construye la **URL del QR** con los cuatro parámetros oficiales.
